@@ -98,6 +98,10 @@ dependency_overrides:
     git:
       url: https://github.com/Tienisto/device_apps.git
       ref: 5dc7956d938541254d2e175766b3b84ea38bb85b
+  gal:
+    # Use stub implementation on desktop platforms due to Windows/macOS compilation issues
+    # Gallery functionality is only needed on mobile (iOS/Android)
+    path: lib/packages/gal_stub
   pasteboard:
     # This is temporary workaround, wait upstream for update
     git:

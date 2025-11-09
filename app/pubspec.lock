@@ -632,10 +632,9 @@ packages:
   gal:
     dependency: "direct main"
     description:
-      name: gal
-      sha256: "969598f986789127fd407a750413249e1352116d4c2be66e81837ffeeaafdfee"
-      url: "https://pub.dev"
-    source: hosted
+      path: "lib/packages/gal_stub"
+      relative: true
+    source: path
     version: "2.3.2"
   glob:
     dependency: "direct main"

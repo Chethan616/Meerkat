@@ -8,7 +8,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   desktop_drop
   dynamic_color
   file_selector_windows
-  gal
   open_dir_windows
   pasteboard
   permission_handler_windows

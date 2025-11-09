@@ -1,0 +1,12 @@
+name: gal
+description: Stub package for gal on desktop platforms
+version: 2.3.2
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+  flutter: ^3.25.0
+
+dependencies:
+  flutter:
+    sdk: flutter

@@ -1,0 +1,22 @@
+targets:
+  $default:
+    builders:
+      slang_build_runner:
+        options:
+          base_locale: en
+          fallback_strategy: base_locale
+          input_directory: assets/i18n
+          input_file_pattern: .json
+          string_interpolation: braces
+          timestamp: false # for F-Droid Reproducible Builds
+          flat_map: false
+          format:
+            enabled: true
+            width: 150
+      dart_mappable_builder:
+        options:
+          renameMethods:
+            fromJson: deserialize
+            toJson: serialize
+            fromMap: fromJson
+            toMap: toJson

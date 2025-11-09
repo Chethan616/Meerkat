@@ -6,7 +6,6 @@ import 'package:localsend_app/provider/device_info_provider.dart';
 import 'package:localsend_app/util/native/platform_check.dart';
 import 'package:localsend_app/util/ui/dynamic_colors.dart';
 import 'package:refena_flutter/refena_flutter.dart';
-import 'package:yaru/yaru.dart' as yaru;
 
 final _borderRadius = BorderRadius.circular(5);
 
@@ -14,8 +13,8 @@ final _borderRadius = BorderRadius.circular(5);
 double get desktopPaddingFix => checkPlatformIsDesktop() ? 8 : 0;
 
 ThemeData getTheme(ColorMode colorMode, Brightness brightness, DynamicColors? dynamicColors) {
-  if (colorMode == ColorMode.yaru) {
-    return _getYaruTheme(brightness);
+  if (colorMode == ColorMode.oni) {
+    return _getOniTheme(brightness);
   }
 
   final colorScheme = _determineColorScheme(colorMode, brightness, dynamicColors);
@@ -153,45 +152,97 @@ ColorScheme _determineColorScheme(ColorMode mode, Brightness brightness, Dynamic
     ColorMode.oled => (dynamicColors?.dark ?? defaultColorScheme).copyWith(
       surface: Colors.black,
     ),
-    ColorMode.yaru => throw 'Should reach here',
+    ColorMode.oni => throw 'Should not reach here',
   };
 
   return colorScheme ?? defaultColorScheme;
 }
 
-ThemeData _getYaruTheme(Brightness brightness) {
-  final baseTheme = brightness == Brightness.light ? yaru.yaruLight : yaru.yaruDark;
-  final colorScheme = baseTheme.colorScheme;
+ThemeData _getOniTheme(Brightness brightness) {
+  // Custom Oni color scheme - vibrant and modern with excellent contrast
+  final ColorScheme oniColorScheme;
+
+  if (brightness == Brightness.light) {
+    // Oni Light Theme - bright and energetic with purple/red accents
+    oniColorScheme = ColorScheme.light(
+      primary: const Color(0xFFD32F2F), // Vibrant red
+      onPrimary: Colors.white,
+      primaryContainer: const Color(0xFFFFCDD2),
+      onPrimaryContainer: const Color(0xFF5F0000),
+      secondary: const Color(0xFF7B1FA2), // Deep purple
+      onSecondary: Colors.white,
+      secondaryContainer: const Color(0xFFE1BEE7),
+      onSecondaryContainer: const Color(0xFF4A0072),
+      tertiary: const Color(0xFF0288D1), // Blue accent
+      onTertiary: Colors.white,
+      tertiaryContainer: const Color(0xFFB3E5FC),
+      onTertiaryContainer: const Color(0xFF01579B),
+      error: const Color(0xFFBA1A1A),
+      onError: Colors.white,
+      errorContainer: const Color(0xFFFFDAD6),
+      onErrorContainer: const Color(0xFF410002),
+      surface: const Color(0xFFFFFBFF),
+      onSurface: const Color(0xFF1C1B1E),
+      surfaceContainerHighest: const Color(0xFFE7E0EB),
+      outline: const Color(0xFF79747E),
+      outlineVariant: const Color(0xFFCAC4CF),
+    );
+  } else {
+    // Oni Dark Theme (Abyss) - deep black with vibrant accents
+    oniColorScheme = ColorScheme.dark(
+      primary: const Color(0xFFFF5252), // Bright red
+      onPrimary: const Color(0xFF5F0000),
+      primaryContainer: const Color(0xFFB71C1C),
+      onPrimaryContainer: const Color(0xFFFFCDD2),
+      secondary: const Color(0xFFBB86FC), // Vibrant purple
+      onSecondary: const Color(0xFF381E72),
+      secondaryContainer: const Color(0xFF4F378B),
+      onSecondaryContainer: const Color(0xFFE9DDFF),
+      tertiary: const Color(0xFF03DAC6), // Cyan accent
+      onTertiary: const Color(0xFF003735),
+      tertiaryContainer: const Color(0xFF004D4A),
+      onTertiaryContainer: const Color(0xFF70F4E8),
+      error: const Color(0xFFFFB4AB),
+      onError: const Color(0xFF690005),
+      errorContainer: const Color(0xFF93000A),
+      onErrorContainer: const Color(0xFFFFDAD6),
+      surface: const Color(0xFF000000), // True black (Abyss)
+      onSurface: const Color(0xFFE6E1E5),
+      surfaceContainerHighest: const Color(0xFF2B2930),
+      outline: const Color(0xFF938F99),
+      outlineVariant: const Color(0xFF49454F),
+    );
+  }
 
   final lightInputBorder = OutlineInputBorder(
-    borderSide: BorderSide(color: colorScheme.secondaryContainer),
+    borderSide: BorderSide(color: oniColorScheme.secondaryContainer),
     borderRadius: _borderRadius,
   );
 
   final darkInputBorder = OutlineInputBorder(
-    borderSide: BorderSide(color: colorScheme.secondaryContainer),
+    borderSide: BorderSide(color: oniColorScheme.secondaryContainer),
     borderRadius: _borderRadius,
   );
 
-  InputDecorationThemeData;
-
-  return baseTheme.copyWith(
-    navigationBarTheme: colorScheme.brightness == Brightness.dark
+  return ThemeData(
+    colorScheme: oniColorScheme,
+    useMaterial3: true,
+    navigationBarTheme: oniColorScheme.brightness == Brightness.dark
         ? NavigationBarThemeData(
             iconTheme: WidgetStateProperty.all(const IconThemeData(color: Colors.white)),
           )
         : null,
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: colorScheme.secondaryContainer,
-      border: colorScheme.brightness == Brightness.light ? lightInputBorder : darkInputBorder,
-      focusedBorder: colorScheme.brightness == Brightness.light ? lightInputBorder : darkInputBorder,
-      enabledBorder: colorScheme.brightness == Brightness.light ? lightInputBorder : darkInputBorder,
+      fillColor: oniColorScheme.secondaryContainer,
+      border: oniColorScheme.brightness == Brightness.light ? lightInputBorder : darkInputBorder,
+      focusedBorder: oniColorScheme.brightness == Brightness.light ? lightInputBorder : darkInputBorder,
+      enabledBorder: oniColorScheme.brightness == Brightness.light ? lightInputBorder : darkInputBorder,
       contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: colorScheme.brightness == Brightness.dark ? Colors.white : null,
+        foregroundColor: oniColorScheme.brightness == Brightness.dark ? Colors.white : null,
         padding: checkPlatformIsDesktop() ? const EdgeInsets.all(16) : const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
     ),

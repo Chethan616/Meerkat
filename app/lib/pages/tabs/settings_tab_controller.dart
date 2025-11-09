@@ -80,11 +80,18 @@ class SettingsTabController extends ReduxNotifier<SettingsTabVm> {
           await updateSystemOverlayStyle(context);
         }
       },
-      onChangeColorMode: (colorMode) async {
+      onChangeColorMode: (context, colorMode) async {
         await _settingsService.setColorMode(colorMode);
         if (colorMode == ColorMode.oled) {
           await _settingsService.setTheme(ThemeMode.dark);
           await updateSystemOverlayStyleWithBrightness(Brightness.dark);
+        }
+
+        // Show snackbar when Legacy theme is selected
+        if (colorMode == ColorMode.localsend) {
+          context.showSnackBar(
+            'Meerkat is derived from LocalSend. This Legacy theme uses the original LocalSend colors.',
+          );
         }
       },
       onTapLanguage: (context) async {

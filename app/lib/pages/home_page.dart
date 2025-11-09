@@ -11,6 +11,7 @@ import 'package:localsend_app/pages/tabs/receive_tab.dart';
 import 'package:localsend_app/pages/tabs/send_tab.dart';
 import 'package:localsend_app/pages/tabs/settings_tab.dart';
 import 'package:localsend_app/provider/selection/selected_sending_files_provider.dart';
+import 'package:localsend_app/provider/settings_provider.dart';
 import 'package:localsend_app/util/native/cross_file_converters.dart';
 import 'package:localsend_app/util/native/platform_check.dart';
 import 'package:localsend_app/widget/responsive_builder.dart';
@@ -120,10 +121,15 @@ class _HomePageState extends State<HomePage> with Refena {
                                       ? // considered adding some extra space so it looks more natural
                                         SizedBox(height: 40)
                                       : SizedBox(height: 20),
-                                  const Text(
-                                    'LocalSend',
-                                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.center,
+                                  Consumer(
+                                    builder: (context, ref) {
+                                      final alias = ref.watch(settingsProvider.select((s) => s.alias));
+                                      return Text(
+                                        alias,
+                                        style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                                        textAlign: TextAlign.center,
+                                      );
+                                    },
                                   ),
                                   SizedBox(height: 20),
                                 ],

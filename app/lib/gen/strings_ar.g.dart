@@ -13,15 +13,21 @@ import 'strings.g.dart';
 class TranslationsAr extends Translations {
   /// You can call this constructor and build your own translation instance of this locale.
   /// Constructing via the enum [AppLocale.build] is preferred.
-  TranslationsAr({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
-    : assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
-      $meta = TranslationMetadata(
-        locale: AppLocale.ar,
-        overrides: overrides ?? {},
-        cardinalResolver: cardinalResolver,
-        ordinalResolver: ordinalResolver,
-      ),
-      super(cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
+  TranslationsAr({
+    Map<String, Node>? overrides,
+    PluralResolver? cardinalResolver,
+    PluralResolver? ordinalResolver,
+    TranslationMetadata<AppLocale, Translations>? meta,
+  }) : assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
+       $meta =
+           meta ??
+           TranslationMetadata(
+             locale: AppLocale.ar,
+             overrides: overrides ?? {},
+             cardinalResolver: cardinalResolver,
+             ordinalResolver: ordinalResolver,
+           ),
+       super(cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
 
   /// Metadata for the translations of <ar>.
   @override
@@ -29,11 +35,14 @@ class TranslationsAr extends Translations {
 
   late final TranslationsAr _root = this; // ignore: unused_field
 
+  @override
+  TranslationsAr $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsAr(meta: meta ?? this.$meta);
+
   // Translations
   @override
   String get locale => 'العربية';
   @override
-  String get appName => 'LocalSend';
+  String get appName => 'Meerkat';
   @override
   late final _TranslationsGeneralAr general = _TranslationsGeneralAr._(_root);
   @override
@@ -318,8 +327,11 @@ class _TranslationsReceivePageAr extends TranslationsReceivePageEn {
 
   // Translations
   @override
-  String subTitle({required num n}) =>
-      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('ar'))(n, one: 'يريد أن يرسل لك ملف', other: 'يريد أن يرسل لك ${n} ملفات');
+  String subTitle({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('ar'))(
+    n,
+    one: 'يريد أن يرسل لك ملف',
+    other: 'يريد أن يرسل لك ${n} ملفات',
+  );
   @override
   String get subTitleMessage => 'أرسل لك رسالة:';
   @override
@@ -990,7 +1002,7 @@ class _TranslationsTroubleshootPageFirewallAr extends TranslationsTroubleshootPa
   String solution({required Object port}) =>
       'هذه المشكلة عادة ما تكون مشكلة في جدار الحماية. يمكنك حل هذه المشكلة عن طريق السماح بالاتصالات الواردة (UDP و TCP) على المنفذ ${port}.';
   @override
-  String get openFirewallSettings => 'افتح جدار الحماية';
+  String get openFirewall => 'افتح جدار الحماية';
 }
 
 // Path: troubleshootPage.noDiscovery

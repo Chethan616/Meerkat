@@ -32,7 +32,7 @@ Future<void> initTray() async {
       String icon;
       if (await File('/.flatpak-info').exists()) {
         // Icon for Flatpak, which must exist in /app/share/icons/hicolor/*x*/apps.
-        icon = 'org.localsend.localsend_app-tray';
+        icon = 'cm.chethan616.meerkat-tray';
       } else {
         icon = Assets.img.logo32White.path;
       }

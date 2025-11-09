@@ -322,9 +322,9 @@ class _Actions extends StatelessWidget {
           children: [
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                elevation: colorMode == ColorMode.yaru ? 0 : null,
-                backgroundColor: colorMode == ColorMode.yaru ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.error,
-                foregroundColor: colorMode == ColorMode.yaru ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onError,
+                elevation: colorMode == ColorMode.oni ? 0 : null,
+                backgroundColor: colorMode == ColorMode.oni ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.error,
+                foregroundColor: colorMode == ColorMode.oni ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onError,
               ),
               onPressed: () {
                 vm.onDecline();

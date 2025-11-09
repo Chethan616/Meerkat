@@ -82,7 +82,7 @@ class SettingsTab extends StatelessWidget {
                               child: Text(colorMode.humanName),
                             );
                           }).toList(),
-                          onChanged: vm.onChangeColorMode,
+                          onChanged: (mode) => vm.onChangeColorMode(context, mode),
                         ),
                       ),
                       _ButtonEntry(
@@ -557,8 +557,14 @@ class SettingsTab extends StatelessWidget {
                         orElse: () => Container(),
                       ),
                   Text(
-                    '© ${DateTime.now().year} Tien Do Nam',
+                    '© ${DateTime.now().year} Chethan Krishna',
                     textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    'Based on LocalSend © 2023-${DateTime.now().year} Tien Do Nam',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   Center(
                     child: TextButton.icon(
@@ -762,9 +768,9 @@ extension on ColorMode {
   String get humanName {
     return switch (this) {
       ColorMode.system => t.settingsTab.general.colorOptions.system,
-      ColorMode.localsend => t.appName,
+      ColorMode.oni => t.settingsTab.general.colorOptions.oni,
       ColorMode.oled => t.settingsTab.general.colorOptions.oled,
-      ColorMode.yaru => 'Yaru',
+      ColorMode.localsend => t.settingsTab.general.colorOptions.localsend,
     };
   }
 }

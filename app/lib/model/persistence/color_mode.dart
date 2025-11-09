@@ -1,6 +1,6 @@
 enum ColorMode {
-  system, // dynamic colors
-  localsend,
-  oled,
-  yaru,
+  system, // dynamic colors (Meerkat)
+  oni, // Oni theme
+  oled, // True Dark Mode
+  localsend, // Legacy (LocalSend original colors)
 }

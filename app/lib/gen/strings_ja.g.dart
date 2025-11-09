@@ -13,15 +13,21 @@ import 'strings.g.dart';
 class TranslationsJa extends Translations {
   /// You can call this constructor and build your own translation instance of this locale.
   /// Constructing via the enum [AppLocale.build] is preferred.
-  TranslationsJa({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
-    : assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
-      $meta = TranslationMetadata(
-        locale: AppLocale.ja,
-        overrides: overrides ?? {},
-        cardinalResolver: cardinalResolver,
-        ordinalResolver: ordinalResolver,
-      ),
-      super(cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
+  TranslationsJa({
+    Map<String, Node>? overrides,
+    PluralResolver? cardinalResolver,
+    PluralResolver? ordinalResolver,
+    TranslationMetadata<AppLocale, Translations>? meta,
+  }) : assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
+       $meta =
+           meta ??
+           TranslationMetadata(
+             locale: AppLocale.ja,
+             overrides: overrides ?? {},
+             cardinalResolver: cardinalResolver,
+             ordinalResolver: ordinalResolver,
+           ),
+       super(cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
 
   /// Metadata for the translations of <ja>.
   @override
@@ -29,11 +35,14 @@ class TranslationsJa extends Translations {
 
   late final TranslationsJa _root = this; // ignore: unused_field
 
+  @override
+  TranslationsJa $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsJa(meta: meta ?? this.$meta);
+
   // Translations
   @override
   String get locale => '日本語';
   @override
-  String get appName => 'LocalSend';
+  String get appName => 'Meerkat';
   @override
   late final _TranslationsGeneralJa general = _TranslationsGeneralJa._(_root);
   @override
@@ -66,8 +75,6 @@ class TranslationsJa extends Translations {
   late final _TranslationsDonationPageJa donationPage = _TranslationsDonationPageJa._(_root);
   @override
   late final _TranslationsChangelogPageJa changelogPage = _TranslationsChangelogPageJa._(_root);
-  @override
-  late final _TranslationsAliasGeneratorJa aliasGenerator = _TranslationsAliasGeneratorJa._(_root);
   @override
   late final _TranslationsDialogsJa dialogs = _TranslationsDialogsJa._(_root);
   @override
@@ -316,8 +323,11 @@ class _TranslationsReceivePageJa extends TranslationsReceivePageEn {
 
   // Translations
   @override
-  String subTitle({required num n}) =>
-      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('ja'))(n, one: 'がファイルを送信しようとしています。', other: 'が ${n} 件のファイルを送信しようとしています。');
+  String subTitle({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('ja'))(
+    n,
+    one: 'がファイルを送信しようとしています。',
+    other: 'が ${n} 件のファイルを送信しようとしています。',
+  );
   @override
   String get subTitleMessage => 'がメッセージを送信しました:';
   @override
@@ -395,8 +405,11 @@ class _TranslationsWebSharePageJa extends TranslationsWebSharePageEn {
   @override
   String get error => 'サーバーの起動中にエラーが発生しました。';
   @override
-  String openLink({required num n}) =>
-      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('ja'))(n, one: 'このリンクをブラウザーで開いてください:', other: 'これらのリンクのいずれかをブラウザーで開いてください:');
+  String openLink({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('ja'))(
+    n,
+    one: 'このリンクをブラウザーで開いてください:',
+    other: 'これらのリンクのいずれかをブラウザーで開いてください:',
+  );
   @override
   String get requests => 'リクエスト';
   @override
@@ -467,15 +480,6 @@ class _TranslationsChangelogPageJa extends TranslationsChangelogPageEn {
   // Translations
   @override
   String get title => '更新履歴';
-}
-
-// Path: aliasGenerator
-class _TranslationsAliasGeneratorJa extends TranslationsAliasGeneratorEn {
-  _TranslationsAliasGeneratorJa._(TranslationsJa root) : this._root = root, super.internal(root);
-
-  final TranslationsJa _root; // ignore: unused_field
-
-  // Translations
 }
 
 // Path: dialogs
@@ -883,7 +887,7 @@ class _TranslationsTroubleshootPageFirewallJa extends TranslationsTroubleshootPa
   @override
   String solution({required Object port}) => 'ファイアウォールに問題があると思われます。ポート ${port} の受け入れ (UDPとTCP) を許可することでこの問題を解決できます。';
   @override
-  String get openFirewallSettings => 'ファイアウォールを開く';
+  String get openFirewall => 'ファイアウォールを開く';
 }
 
 // Path: troubleshootPage.noDiscovery

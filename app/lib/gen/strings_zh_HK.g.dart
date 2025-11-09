@@ -13,21 +13,30 @@ import 'strings.g.dart';
 class TranslationsZhHk extends Translations {
   /// You can call this constructor and build your own translation instance of this locale.
   /// Constructing via the enum [AppLocale.build] is preferred.
-  TranslationsZhHk({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver})
-    : assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
-      $meta = TranslationMetadata(
-        locale: AppLocale.zhHk,
-        overrides: overrides ?? {},
-        cardinalResolver: cardinalResolver,
-        ordinalResolver: ordinalResolver,
-      ),
-      super(cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
+  TranslationsZhHk({
+    Map<String, Node>? overrides,
+    PluralResolver? cardinalResolver,
+    PluralResolver? ordinalResolver,
+    TranslationMetadata<AppLocale, Translations>? meta,
+  }) : assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
+       $meta =
+           meta ??
+           TranslationMetadata(
+             locale: AppLocale.zhHk,
+             overrides: overrides ?? {},
+             cardinalResolver: cardinalResolver,
+             ordinalResolver: ordinalResolver,
+           ),
+       super(cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
 
   /// Metadata for the translations of <zh-HK>.
   @override
   final TranslationMetadata<AppLocale, Translations> $meta;
 
   late final TranslationsZhHk _root = this; // ignore: unused_field
+
+  @override
+  TranslationsZhHk $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsZhHk(meta: meta ?? this.$meta);
 
   // Translations
   @override
@@ -66,8 +75,6 @@ class TranslationsZhHk extends Translations {
   late final _TranslationsDonationPageZhHk donationPage = _TranslationsDonationPageZhHk._(_root);
   @override
   late final _TranslationsChangelogPageZhHk changelogPage = _TranslationsChangelogPageZhHk._(_root);
-  @override
-  late final _TranslationsAliasGeneratorZhHk aliasGenerator = _TranslationsAliasGeneratorZhHk._(_root);
   @override
   late final _TranslationsDialogsZhHk dialogs = _TranslationsDialogsZhHk._(_root);
   @override
@@ -316,8 +323,11 @@ class _TranslationsReceivePageZhHk extends TranslationsReceivePageEn {
 
   // Translations
   @override
-  String subTitle({required num n}) =>
-      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('zh'))(n, one: '想 send 1 個檔案畀你。', other: '想 send ${n} 個檔案畀你。');
+  String subTitle({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('zh'))(
+    n,
+    one: '想 send 1 個檔案畀你。',
+    other: '想 send ${n} 個檔案畀你。',
+  );
   @override
   String get subTitleMessage => 'send 咗條訊息畀你：';
   @override
@@ -395,8 +405,11 @@ class _TranslationsWebSharePageZhHk extends TranslationsWebSharePageEn {
   @override
   String get error => '開 server 嗰陣發生錯誤。';
   @override
-  String openLink({required num n}) =>
-      (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('zh'))(n, one: '喺瀏覽器開啟以下連結：', other: '喺瀏覽器開啟以下任何一個連結：');
+  String openLink({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('zh'))(
+    n,
+    one: '喺瀏覽器開啟以下連結：',
+    other: '喺瀏覽器開啟以下任何一個連結：',
+  );
   @override
   String get requests => '請求';
   @override
@@ -467,15 +480,6 @@ class _TranslationsChangelogPageZhHk extends TranslationsChangelogPageEn {
   // Translations
   @override
   String get title => '更新記錄';
-}
-
-// Path: aliasGenerator
-class _TranslationsAliasGeneratorZhHk extends TranslationsAliasGeneratorEn {
-  _TranslationsAliasGeneratorZhHk._(TranslationsZhHk root) : this._root = root, super.internal(root);
-
-  final TranslationsZhHk _root; // ignore: unused_field
-
-  // Translations
 }
 
 // Path: dialogs
@@ -882,7 +886,7 @@ class _TranslationsTroubleshootPageFirewallZhHk extends TranslationsTroubleshoot
   @override
   String solution({required Object port}) => '應該係防火牆嘅問題，可以透過允許接受 port ${port} 嘅連線（UDP 同 TCP）嚟解決。';
   @override
-  String get openFirewallSettings => '開啟防火牆設定';
+  String get openFirewall => '開啟防火牆設定';
 }
 
 // Path: troubleshootPage.noDiscovery
@@ -1257,7 +1261,11 @@ class _TranslationsDialogsQuickSaveFromFavoritesNoticeZhHk extends TranslationsD
   @override
   String get title => _root.general.quickSaveFromFavorites;
   @override
-  List<String> get content => ['自動接受來自已收藏裝置嘅檔案傳輸請求。', '警告：目前呢個選項並非絕對安全，因為只要黑客攞到你任何一部已收藏裝置嘅指紋，佢就可以無限制噉 send 嘢畀你。', '不過揀已收藏裝置點都安全過揀所有裝置嘅。'];
+  List<String> get content => [
+    '自動接受來自已收藏裝置嘅檔案傳輸請求。',
+    '警告：目前呢個選項並非絕對安全，因為只要黑客攞到你任何一部已收藏裝置嘅指紋，佢就可以無限制噉 send 嘢畀你。',
+    '不過揀已收藏裝置點都安全過揀所有裝置嘅。',
+  ];
 }
 
 // Path: dialogs.pin

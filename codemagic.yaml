@@ -50,22 +50,15 @@ workflows:
         track: internal
         submit_as_draft: true
 
-  # iOS Build Workflow
+  # iOS Build Workflow (Testing Mode - No Code Signing)
   ios-workflow:
-    name: iOS Build
+    name: iOS Build (Test Mode)
     max_build_duration: 60
     instance_type: mac_mini_m2
-    integrations:
-      app_store_connect: meerkat_app_store_connect
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.chethan616.meerkat
       flutter: stable
       xcode: latest
       cocoapods: default
-      vars:
-        APP_STORE_APPLE_ID: your_app_store_id
     scripts:
       - name: Install Rust + iOS targets
         script: |
@@ -87,36 +80,22 @@ workflows:
         script: |
           cd app/ios
           pod install
-      - name: Build iOS
+      - name: Build iOS (no code signing for testing)
         script: |
           cd app
-          flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
+          flutter build ios --release --no-codesign
     artifacts:
-      - app/build/ios/ipa/*.ipa
-      - app/build/ios/archive/Runner.xcarchive
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
-        beta_groups:
-          - Internal Testing
-        submit_to_app_store: false
+      - app/build/ios/iphoneos/*.app
 
-  # macOS Build Workflow
+  # macOS Build Workflow (Testing Mode - No Code Signing)
   macos-workflow:
-    name: macOS Build
+    name: macOS Build (Test Mode)
     max_build_duration: 60
     instance_type: mac_mini_m2
-    integrations:
-      app_store_connect: meerkat_app_store_connect
     environment:
-      groups:
-        - app_store
       flutter: stable
       xcode: latest
       cocoapods: default
-      vars:
-        BUNDLE_ID: com.chethan616.meerkat
     scripts:
       - name: Install Rust toolchain for macOS
         script: |
@@ -137,10 +116,10 @@ workflows:
         script: |
           cd app/macos
           pod install
-      - name: Build macOS application
+      - name: Build macOS application (no code signing for testing)
         script: |
           cd app
-          flutter build macos --release
+          flutter build macos --release --no-codesign
       - name: Package macOS app
         script: |
           cd app/build/macos/Build/Products/Release
@@ -150,11 +129,6 @@ workflows:
     artifacts:
       - app/build/macos/Build/Products/Release/*.app
       - app/build/macos/Build/Products/Release/*.dmg
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: false
-        submit_to_app_store: false
 
   # Windows Build Workflow
   windows-workflow:

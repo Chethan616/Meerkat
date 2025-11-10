@@ -27,6 +27,7 @@ import 'package:localsend_app/pages/receive_page.dart';
 import 'package:localsend_app/provider/device_info_provider.dart';
 import 'package:localsend_app/provider/favorites_provider.dart';
 import 'package:localsend_app/provider/http_provider.dart';
+import 'package:localsend_app/provider/biometric_auth_provider.dart';
 import 'package:localsend_app/provider/logging/discovery_logs_provider.dart';
 import 'package:localsend_app/provider/network/nearby_devices_provider.dart';
 import 'package:localsend_app/provider/network/send_provider.dart';
@@ -306,6 +307,22 @@ class ReceiveController {
           files: session?.files.values.map((f) => f.file).toList() ?? [],
           message: message,
           onAccept: () async {
+            // Check if biometric authentication is enabled
+            final biometricNotifier = ref.notifier(biometricAuthProvider);
+            final isBiometricEnabled = await biometricNotifier.isBiometricEnabled();
+
+            if (isBiometricEnabled) {
+              // Request biometric authentication
+              final authenticated = await biometricNotifier.authenticate(
+                reason: 'Authenticate to accept file transfer',
+              );
+
+              if (!authenticated) {
+                // Authentication failed, don't accept the files
+                return;
+              }
+            }
+
             if (message != null) {
               // accept nothing
               ref.notifier(serverProvider).acceptFileRequest({});

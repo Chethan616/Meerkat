@@ -14,6 +14,7 @@ import 'package:localsend_app/pages/donation/donation_page.dart';
 import 'package:localsend_app/pages/language_page.dart';
 import 'package:localsend_app/pages/settings/network_interfaces_page.dart';
 import 'package:localsend_app/pages/tabs/settings_tab_controller.dart';
+import 'package:localsend_app/provider/biometric_auth_provider.dart';
 import 'package:localsend_app/provider/settings_provider.dart';
 import 'package:localsend_app/provider/version_provider.dart';
 import 'package:localsend_app/util/alias_generator.dart';
@@ -21,6 +22,7 @@ import 'package:localsend_app/util/device_type_ext.dart';
 import 'package:localsend_app/util/native/macos_channel.dart';
 import 'package:localsend_app/util/native/pick_directory_path.dart';
 import 'package:localsend_app/util/native/platform_check.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:localsend_app/widget/custom_dropdown_button.dart';
 import 'package:localsend_app/widget/dialogs/encryption_disabled_notice.dart';
 import 'package:localsend_app/widget/dialogs/pin_dialog.dart';
@@ -174,28 +176,7 @@ class SettingsTab extends StatelessWidget {
                           }
                         },
                       ),
-                      _BooleanEntry(
-                        label: t.settingsTab.receive.requirePin,
-                        value: vm.settings.receivePin != null,
-                        onChanged: (b) async {
-                          final currentPIN = vm.settings.receivePin;
-                          if (currentPIN != null) {
-                            await ref.notifier(settingsProvider).setReceivePin(null);
-                          } else {
-                            final String? newPin = await showDialog<String>(
-                              context: context,
-                              builder: (_) => const PinDialog(
-                                obscureText: false,
-                                generateRandom: false,
-                              ),
-                            );
-
-                            if (newPin != null && newPin.isNotEmpty) {
-                              await ref.notifier(settingsProvider).setReceivePin(newPin);
-                            }
-                          }
-                        },
-                      ),
+                      // Removed "Require PIN" - use biometric security in Security section instead
                       if (checkPlatformWithFileSystem())
                         _SettingsEntry(
                           label: t.settingsTab.receive.destination,
@@ -488,6 +469,8 @@ class SettingsTab extends StatelessWidget {
                       ),
                     ],
                   ),
+                  // Security Section - Biometric Authentication
+                  _BiometricSecuritySection(),
                   _SettingsSection(
                     title: t.settingsTab.other.title,
                     padding: const EdgeInsets.only(bottom: 0),
@@ -772,5 +755,154 @@ extension on ColorMode {
       ColorMode.oled => t.settingsTab.general.colorOptions.oled,
       ColorMode.dune => t.settingsTab.general.colorOptions.dune,
     };
+  }
+}
+
+/// Biometric Security Section Widget
+class _BiometricSecuritySection extends StatefulWidget {
+  const _BiometricSecuritySection();
+
+  @override
+  State<_BiometricSecuritySection> createState() => _BiometricSecuritySectionState();
+}
+
+class _BiometricSecuritySectionState extends State<_BiometricSecuritySection> {
+  List<BiometricType> _availableBiometrics = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBiometrics();
+  }
+
+  Future<void> _checkBiometrics() async {
+    final notifier = context.ref.notifier(biometricAuthProvider);
+    await notifier.checkBiometricAvailability();
+    final biometrics = await notifier.getAvailableBiometrics();
+    if (mounted) {
+      setState(() {
+        _availableBiometrics = biometrics;
+        _isLoading = false;
+      });
+    }
+  }
+
+  String _getBiometricLabel() {
+    if (_availableBiometrics.isEmpty) {
+      return 'Biometric Authentication';
+    }
+
+    if (_availableBiometrics.contains(BiometricType.face)) {
+      return 'Face ID / Face Recognition';
+    } else if (_availableBiometrics.contains(BiometricType.fingerprint)) {
+      return 'Fingerprint / Touch ID';
+    } else if (_availableBiometrics.contains(BiometricType.iris)) {
+      return 'Iris Recognition';
+    }
+    return 'Device Credentials';
+  }
+
+  String _getBiometricDescription() {
+    if (checkPlatform([TargetPlatform.windows])) {
+      return 'Use Windows Hello (fingerprint, face, or PIN)';
+    } else if (checkPlatform([TargetPlatform.iOS])) {
+      return 'Use Face ID or Touch ID to secure file transfers';
+    } else if (checkPlatform([TargetPlatform.android])) {
+      return 'Use fingerprint, face unlock, or device credentials';
+    } else if (checkPlatform([TargetPlatform.macOS])) {
+      return 'Use Touch ID or Apple Watch to secure file transfers';
+    }
+    return 'Secure your file transfers with biometric authentication';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder(
+      provider: (context) => biometricAuthProvider,
+      builder: (context, biometricState) {
+        final isEnabled = biometricState == BiometricAuthState.available;
+
+        if (_isLoading) {
+          return const SizedBox.shrink();
+        }
+
+        return _SettingsSection(
+          title: 'Security',
+          children: [
+            _SettingsEntry(
+              label: _getBiometricLabel(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          _getBiometricDescription(),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                      Switch(
+                        value: isEnabled,
+                        onChanged: (value) async {
+                          final notifier = context.ref.notifier(biometricAuthProvider);
+                          if (value) {
+                            final result = await notifier.enableBiometric();
+                            if (!result.success && context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(result.error ?? 'Failed to enable biometric authentication'),
+                                  duration: const Duration(seconds: 5),
+                                  action: SnackBarAction(
+                                    label: 'OK',
+                                    onPressed: () {},
+                                  ),
+                                ),
+                              );
+                            } else if (result.success && context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Security enabled successfully! 🔒'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          } else {
+                            await notifier.disableBiometric();
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Security disabled'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  if (isEnabled)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: Text(
+                        '🔒 File transfers will require ${_getBiometricLabel().toLowerCase()} before accepting',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 15),
+          ],
+        );
+      },
+    );
   }
 }

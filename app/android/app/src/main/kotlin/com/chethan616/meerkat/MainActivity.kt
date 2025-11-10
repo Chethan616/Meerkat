@@ -8,7 +8,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.Settings
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -19,7 +19,7 @@ private const val REQUEST_CODE_PICK_DIRECTORY = 1
 private const val REQUEST_CODE_PICK_DIRECTORY_PATH = 2
 private const val REQUEST_CODE_PICK_FILE = 3
 
-class MainActivity : FlutterActivity() {
+class MainActivity : FlutterFragmentActivity() {
     private var pendingResult: MethodChannel.Result? = null
 
     // Overriding the static methods we need from the Java class, as described
@@ -59,7 +59,7 @@ class MainActivity : FlutterActivity() {
                 "createDirectory" -> handleCreateDirectory(call, result)
 
                 "openContentUri" -> {
-                    openUri(context, call.argument<String>("uri")!!)
+                    openUri(this, call.argument<String>("uri")!!)
                     result.success(null)
                 }
 
@@ -227,7 +227,7 @@ class MainActivity : FlutterActivity() {
         }
 
         DocumentsContract.createDocument(
-            context.contentResolver, documentUri, DocumentsContract.Document.MIME_TYPE_DIR,
+            this.contentResolver, documentUri, DocumentsContract.Document.MIME_TYPE_DIR,
             directoryName
         )
 

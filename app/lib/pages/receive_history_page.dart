@@ -116,7 +116,9 @@ class ReceiveHistoryPage extends StatelessWidget {
           if (entries.isEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 100),
-              child: Center(child: Text(t.receiveHistoryPage.empty, style: Theme.of(context).textTheme.headlineMedium)),
+              child: Center(
+                child: Text(t.receiveHistoryPage.empty, style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+              ),
             )
           else
             ...entries.map((entry) {
@@ -178,7 +180,7 @@ class ReceiveHistoryPage extends StatelessWidget {
                             const SizedBox(height: 3),
                             Text(
                               entry.fileName,
-                              style: const TextStyle(fontSize: 16),
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                               maxLines: 1,
                               overflow: TextOverflow.fade,
                               softWrap: false,

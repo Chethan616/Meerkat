@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localsend_app/gen/assets.gen.dart';
+import 'package:lottie/lottie.dart';
 
 class LocalSendLogo extends StatelessWidget {
   final bool withText;
@@ -8,14 +9,20 @@ class LocalSendLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final logo = ColorFiltered(
-      colorFilter: ColorFilter.mode(
-        Theme.of(context).colorScheme.primary,
-        BlendMode.srcATop,
-      ),
-      child: Assets.img.logo512.image(
+    final logo = SizedBox(
+      width: 200,
+      height: 200,
+      child: Lottie.asset(
+        'assets/img/meerkat-animation.json',
         width: 200,
         height: 200,
+        fit: BoxFit.contain,
+        repeat: true,
+        animate: true,
+        // Enable hardware acceleration for better gradient rendering
+        options: LottieOptions(
+          enableMergePaths: true,
+        ),
       ),
     );
 

@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> with Refena {
                             children: [
                               const Icon(Icons.file_download, size: 128),
                               const SizedBox(height: 30),
-                              Text(t.sendTab.placeItems, style: Theme.of(context).textTheme.titleLarge),
+                              Text(t.sendTab.placeItems, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:localsend_app/gen/strings.g.dart';
 import 'package:localsend_app/model/persistence/color_mode.dart';
 import 'package:localsend_app/provider/device_info_provider.dart';
 import 'package:localsend_app/util/native/platform_check.dart';
@@ -33,28 +32,7 @@ ThemeData getTheme(ColorMode colorMode, Brightness brightness, DynamicColors? dy
     borderRadius: _borderRadius,
   );
 
-  // https://github.com/localsend/localsend/issues/52
-  final String? fontFamily;
-  if (checkPlatform([TargetPlatform.windows])) {
-    fontFamily = switch (LocaleSettings.currentLocale) {
-      AppLocale.ja => 'Yu Gothic UI',
-      AppLocale.ko => 'Malgun Gothic',
-      AppLocale.zhCn => 'Microsoft YaHei UI',
-      AppLocale.zhHk || AppLocale.zhTw => 'Microsoft JhengHei UI',
-      _ => 'Segoe UI Variable Display',
-    };
-  } else if (checkPlatform([TargetPlatform.linux])) {
-    fontFamily = switch (LocaleSettings.currentLocale) {
-      AppLocale.ja => 'Noto Sans CJK JP',
-      AppLocale.ko => 'Noto Sans CJK KR',
-      AppLocale.zhCn => 'Noto Sans CJK SC',
-      AppLocale.zhHk || AppLocale.zhTw => 'Noto Sans CJK TC',
-      _ => 'Noto Sans',
-    };
-  } else {
-    fontFamily = null;
-  }
-
+  // Use default system font for the app
   return ThemeData(
     colorScheme: colorScheme,
     useMaterial3: true,
@@ -82,7 +60,6 @@ ThemeData getTheme(ColorMode colorMode, Brightness brightness, DynamicColors? dy
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8 + desktopPaddingFix),
       ),
     ),
-    fontFamily: fontFamily,
   );
 }
 

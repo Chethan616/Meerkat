@@ -61,7 +61,7 @@ class SendTab extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
                     child: Text(
                       t.sendTab.selection.title,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   HorizontalClipListView(
@@ -95,7 +95,7 @@ class SendTab extends StatelessWidget {
                             children: [
                               Text(
                                 t.sendTab.selection.title,
-                                style: Theme.of(context).textTheme.titleMedium,
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               const Spacer(),
                               CustomIconButton(
@@ -106,8 +106,14 @@ class SendTab extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 5),
-                          Text(t.sendTab.selection.files(files: vm.selectedFiles.length)),
-                          Text(t.sendTab.selection.size(size: vm.selectedFiles.fold(0, (prev, curr) => prev + curr.size).asReadableFileSize)),
+                          Text(
+                            t.sendTab.selection.files(files: vm.selectedFiles.length),
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                            t.sendTab.selection.size(size: vm.selectedFiles.fold(0, (prev, curr) => prev + curr.size).asReadableFileSize),
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
                           const SizedBox(height: 10),
                           SizedBox(
                             height: defaultThumbnailSize,
@@ -175,7 +181,7 @@ class SendTab extends StatelessWidget {
                     Flexible(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Text(t.sendTab.nearbyDevices, style: Theme.of(context).textTheme.titleMedium),
+                        child: Text(t.sendTab.nearbyDevices, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -186,14 +192,14 @@ class SendTab extends StatelessWidget {
                       message: t.sendTab.manualSending,
                       child: CustomIconButton(
                         onPressed: () async => vm.onTapAddress(context),
-                        child: const Icon(Icons.ads_click),
+                        child: const Icon(Icons.location_searching),
                       ),
                     ),
                     Tooltip(
                       message: t.dialogs.favoriteDialog.title,
                       child: CustomIconButton(
                         onPressed: () async => await vm.onTapFavorite(context),
-                        child: const Icon(Icons.favorite),
+                        child: const Icon(Icons.star),
                       ),
                     ),
                     _SendModeButton(
@@ -209,29 +215,63 @@ class SendTab extends StatelessWidget {
                       child: DevicePlaceholderListTile(),
                     ),
                   ),
-                ...vm.nearbyDevices.map((device) {
-                  final favoriteEntry = vm.favoriteDevices.findDevice(device);
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10, left: _horizontalPadding, right: _horizontalPadding),
-                    child: Hero(
-                      tag: 'device-${device.ip}',
-                      child: vm.sendMode == SendMode.multiple
-                          ? _MultiSendDeviceListTile(
-                              device: device,
-                              isFavorite: favoriteEntry != null,
-                              nameOverride: favoriteEntry?.alias,
-                              vm: vm,
-                            )
-                          : DeviceListTile(
-                              device: device,
-                              isFavorite: favoriteEntry != null,
-                              nameOverride: favoriteEntry?.alias,
-                              onFavoriteTap: () async => await vm.onToggleFavorite(context, device),
-                              onTap: () async => await vm.onTapDevice(context, device),
-                            ),
+                // Use CarouselView when there are multiple devices (3 or more)
+                if (vm.nearbyDevices.length >= 3)
+                  SizedBox(
+                    height: 100,
+                    child: CarouselView(
+                      itemExtent: MediaQuery.of(context).size.width * 0.85,
+                      shrinkExtent: MediaQuery.of(context).size.width * 0.85,
+                      children: vm.nearbyDevices.map((device) {
+                        final favoriteEntry = vm.favoriteDevices.findDevice(device);
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Hero(
+                            tag: 'device-${device.ip}',
+                            child: vm.sendMode == SendMode.multiple
+                                ? _MultiSendDeviceListTile(
+                                    device: device,
+                                    isFavorite: favoriteEntry != null,
+                                    nameOverride: favoriteEntry?.alias,
+                                    vm: vm,
+                                  )
+                                : DeviceListTile(
+                                    device: device,
+                                    isFavorite: favoriteEntry != null,
+                                    nameOverride: favoriteEntry?.alias,
+                                    onFavoriteTap: () async => await vm.onToggleFavorite(context, device),
+                                    onTap: () async => await vm.onTapDevice(context, device),
+                                  ),
+                          ),
+                        );
+                      }).toList(),
                     ),
-                  );
-                }),
+                  ),
+                // Use regular list for 1-2 devices
+                if (vm.nearbyDevices.length > 0 && vm.nearbyDevices.length < 3)
+                  ...vm.nearbyDevices.map((device) {
+                    final favoriteEntry = vm.favoriteDevices.findDevice(device);
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10, left: _horizontalPadding, right: _horizontalPadding),
+                      child: Hero(
+                        tag: 'device-${device.ip}',
+                        child: vm.sendMode == SendMode.multiple
+                            ? _MultiSendDeviceListTile(
+                                device: device,
+                                isFavorite: favoriteEntry != null,
+                                nameOverride: favoriteEntry?.alias,
+                                vm: vm,
+                              )
+                            : DeviceListTile(
+                                device: device,
+                                isFavorite: favoriteEntry != null,
+                                nameOverride: favoriteEntry?.alias,
+                                onFavoriteTap: () async => await vm.onToggleFavorite(context, device),
+                                onTap: () async => await vm.onTapDevice(context, device),
+                              ),
+                      ),
+                    );
+                  }),
                 const SizedBox(height: 10),
                 Center(
                   child: TextButton(
@@ -507,7 +547,7 @@ class _SendModeButton extends StatelessWidget {
             children: [
               const Directionality(
                 textDirection: TextDirection.ltr,
-                child: Icon(Icons.help),
+                child: Icon(Icons.help_outline),
               ),
               const SizedBox(width: 10),
               Text(t.sendTab.sendModeHelp),

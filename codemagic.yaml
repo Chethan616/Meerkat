@@ -108,6 +108,19 @@ workflows:
           rustup target add aarch64-apple-darwin
           rustc --version
           cargo --version
+      - name: Remove code signing requirements
+        script: |
+          cd app/macos
+          echo "🔓 Removing Team ID and code signing requirements..."
+          # Remove DEVELOPMENT_TEAM lines
+          sed -i '' '/DEVELOPMENT_TEAM = 3W7H4PYMCV;/d' Runner.xcodeproj/project.pbxproj
+          sed -i '' '/DEVELOPMENT_TEAM/d' Runner.xcodeproj/project.pbxproj
+          # Change CODE_SIGN_IDENTITY to "-" (sign to run locally)
+          sed -i '' 's/CODE_SIGN_IDENTITY = "Apple Development";/CODE_SIGN_IDENTITY = "-";/g' Runner.xcodeproj/project.pbxproj
+          sed -i '' 's/"CODE_SIGN_IDENTITY\[sdk=macosx\*\]" = "Apple Development";/"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";/g' Runner.xcodeproj/project.pbxproj
+          # Change CODE_SIGN_STYLE to Manual
+          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' Runner.xcodeproj/project.pbxproj
+          echo "✅ Code signing disabled successfully"
       - name: Get Flutter packages
         script: |
           cd app

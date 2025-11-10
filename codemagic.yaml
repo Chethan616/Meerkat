@@ -1,0 +1,250 @@
+workflows:
+  # Android Build Workflow
+  android-workflow:
+    name: Android Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      android_signing:
+        - meerkat_keystore
+      groups:
+        - google_play
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install Rust toolchain
+        script: |
+          echo "🔧 Installing Rust toolchain..."
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+          rustup toolchain install stable --allow-downgrade
+          rustup default stable
+          rustup target add x86_64-unknown-linux-gnu || true
+          rustc --version
+          cargo --version
+      - name: Set up keystore
+        script: |
+          echo $MEERKAT_KEYSTORE_FILE | base64 --decode > $CM_BUILD_DIR/app/android/app/meerkat-keystore.jks
+      - name: Set up local.properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/app/android/local.properties"
+      - name: Get Flutter packages
+        script: |
+          cd app
+          flutter pub get
+      - name: Build Android APK
+        script: |
+          cd app
+          flutter build apk --release
+      - name: Build Android App Bundle
+        script: |
+          cd app
+          flutter build appbundle --release
+    artifacts:
+      - app/build/app/outputs/flutter-apk/*.apk
+      - app/build/app/outputs/bundle/release/*.aab
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: true
+
+  # iOS Build Workflow
+  ios-workflow:
+    name: iOS Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: meerkat_app_store_connect
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.chethan616.meerkat
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      vars:
+        APP_STORE_APPLE_ID: your_app_store_id
+    scripts:
+      - name: Install Rust + iOS targets
+        script: |
+          echo "🔧 Installing Rust + iOS targets..."
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+          rustup toolchain install stable --allow-downgrade
+          rustup default stable
+          rustup target add aarch64-apple-ios
+          rustup target add aarch64-apple-ios-sim
+          rustup target add x86_64-apple-ios
+          rustc --version
+          cargo --version
+      - name: Get Flutter packages
+        script: |
+          cd app
+          flutter pub get
+      - name: Install CocoaPods dependencies
+        script: |
+          cd app/ios
+          pod install
+      - name: Build iOS
+        script: |
+          cd app
+          flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
+    artifacts:
+      - app/build/ios/ipa/*.ipa
+      - app/build/ios/archive/Runner.xcarchive
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - Internal Testing
+        submit_to_app_store: false
+
+  # macOS Build Workflow
+  macos-workflow:
+    name: macOS Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: meerkat_app_store_connect
+    environment:
+      groups:
+        - app_store
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      vars:
+        BUNDLE_ID: com.chethan616.meerkat
+    scripts:
+      - name: Install Rust toolchain for macOS
+        script: |
+          echo "🔧 Installing Rust for macOS..."
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+          rustup toolchain install stable --allow-downgrade
+          rustup default stable
+          rustup target add x86_64-apple-darwin
+          rustup target add aarch64-apple-darwin
+          rustc --version
+          cargo --version
+      - name: Get Flutter packages
+        script: |
+          cd app
+          flutter pub get
+      - name: Install CocoaPods dependencies
+        script: |
+          cd app/macos
+          pod install
+      - name: Build macOS application
+        script: |
+          cd app
+          flutter build macos --release
+      - name: Package macOS app
+        script: |
+          cd app/build/macos/Build/Products/Release
+          APP_NAME="Meerkat.app"
+          DMG_NAME="Meerkat-macOS.dmg"
+          hdiutil create -volname Meerkat -srcfolder "$APP_NAME" -ov -format UDZO "$DMG_NAME"
+    artifacts:
+      - app/build/macos/Build/Products/Release/*.app
+      - app/build/macos/Build/Products/Release/*.dmg
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false
+        submit_to_app_store: false
+
+  # Windows Build Workflow
+  windows-workflow:
+    name: Windows Build
+    max_build_duration: 60
+    instance_type: windows_x2
+    environment:
+      flutter: stable
+      groups:
+        - windows_signing
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          cd app
+          flutter pub get
+      - name: Build Windows executable
+        script: |
+          cd app
+          flutter build windows --release
+      - name: Create Windows installer
+        script: |
+          cd app
+          # Build MSIX package
+          flutter pub run msix:create
+      - name: Build portable ZIP
+        script: |
+          cd app/build/windows/x64/runner/Release
+          7z a -tzip Meerkat-Windows-Portable.zip *
+    artifacts:
+      - app/build/windows/**/*.msix
+      - app/build/windows/**/*.zip
+      - app/build/windows/x64/runner/Release/*.exe
+
+  # All Platforms Build
+  all-platforms-workflow:
+    name: Build All Platforms
+    max_build_duration: 90
+    instance_type: mac_mini_m2
+    triggering:
+      events:
+        - push
+        - tag
+        - pull_request
+      branch_patterns:
+        - pattern: 'main'
+          include: true
+          source: true
+        - pattern: 'release/*'
+          include: true
+          source: true
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install Rust (for all builds)
+        script: |
+          echo "🔧 Installing Rust globally..."
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+          rustup toolchain install stable --allow-downgrade
+          rustup default stable
+          rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim x86_64-unknown-linux-gnu
+          rustc --version
+          cargo --version
+      - name: Get Flutter packages
+        script: |
+          cd app
+          flutter pub get
+      - name: Run Flutter analyze
+        script: |
+          cd app
+          flutter analyze
+      - name: Run Flutter tests
+        script: |
+          cd app
+          flutter test
+      - name: Build Android APK
+        script: |
+          cd app
+          flutter build apk --release
+      - name: Build iOS (no code signing for test)
+        script: |
+          cd app
+          flutter build ios --release --no-codesign
+      - name: Build macOS (no code signing for test)
+        script: |
+          cd app
+          flutter build macos --release --no-codesign
+    artifacts:
+      - app/build/app/outputs/flutter-apk/*.apk
+      - app/build/ios/iphoneos/*.app
+      - app/build/macos/Build/Products/Release/*.app

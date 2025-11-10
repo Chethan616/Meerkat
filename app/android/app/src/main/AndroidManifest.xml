@@ -15,6 +15,11 @@
 
     <uses-permission android:name="android.permission.BIND_QUICK_SETTINGS_TILE" tools:targetApi="24" />
 
+    <!-- Notification permissions for Android 13+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <!-- Android TV -->
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />

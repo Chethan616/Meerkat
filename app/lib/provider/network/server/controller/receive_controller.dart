@@ -43,6 +43,7 @@ import 'package:localsend_app/util/native/directories.dart';
 import 'package:localsend_app/util/native/file_saver.dart';
 import 'package:localsend_app/util/native/platform_check.dart';
 import 'package:localsend_app/util/native/tray_helper.dart';
+import 'package:localsend_app/util/notification_helper.dart';
 import 'package:localsend_app/util/simple_server.dart';
 import 'package:localsend_app/widget/dialogs/open_file_dialog.dart';
 import 'package:logging/logging.dart';
@@ -259,6 +260,15 @@ class ReceiveController {
       ),
     );
 
+    // Show notification about incoming file transfer
+    final senderAlias = server.ref.read(favoritesProvider).firstWhereOrNull((e) => e.fingerprint == dto.info.fingerprint)?.alias ?? dto.info.alias;
+    final firstFile = dto.files.values.first;
+    await NotificationHelper.showIncomingFileNotification(
+      senderName: senderAlias,
+      fileName: firstFile.fileName,
+      fileCount: dto.files.length,
+    );
+
     bool quickSave = settings.quickSave && server.getState().session?.message == null;
     final quickSaveFromFavorites = settings.quickSaveFromFavorites && server.getState().session?.message == null;
     if (quickSaveFromFavorites) {
@@ -267,6 +277,23 @@ class ReceiveController {
         quickSave = true;
       }
     }
+
+    // Check biometric authentication before allowing quickSave
+    // This prevents bypassing biometric security when app is in background
+    final biometricNotifier = server.ref.notifier(biometricAuthProvider);
+    final isBiometricEnabled = await biometricNotifier.isBiometricEnabled();
+
+    if (isBiometricEnabled && quickSave) {
+      // Biometric is enabled and quickSave would bypass it
+      // Force the user to open the app and authenticate
+      quickSave = false;
+
+      // Show the app if it's minimized/hidden
+      if (checkPlatformHasTray() && (await windowManager.isMinimized() || !(await windowManager.isVisible()) || !(await windowManager.isFocused()))) {
+        await showFromTray();
+      }
+    }
+
     final Map<String, String>? selection;
     if (quickSave) {
       // accept all files
@@ -612,6 +639,16 @@ class ReceiveController {
           ),
         ),
       );
+
+      // Show completion notification
+      if (!hasError) {
+        final fileCount = session.files.values.where((f) => f.status == FileStatus.finished).length;
+        await NotificationHelper.showTransferCompleteNotification(
+          fileCount: fileCount,
+          senderName: session.senderAlias,
+        );
+      }
+
       final settings = server.ref.read(settingsProvider);
       bool quickSave = settings.quickSave && server.getState().session?.message == null;
       final quickSaveFromFavorites = settings.quickSaveFromFavorites && server.getState().session?.message == null;

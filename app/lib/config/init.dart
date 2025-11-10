@@ -45,6 +45,7 @@ import 'package:localsend_app/util/native/device_info_helper.dart';
 import 'package:localsend_app/util/native/macos_channel.dart';
 import 'package:localsend_app/util/native/platform_check.dart';
 import 'package:localsend_app/util/native/tray_helper.dart';
+import 'package:localsend_app/util/notification_helper.dart';
 import 'package:localsend_app/util/rhttp.dart';
 import 'package:localsend_app/util/ui/dynamic_colors.dart';
 import 'package:localsend_app/util/ui/snackbar.dart';
@@ -74,6 +75,9 @@ Future<RefenaContainer> preInit(List<String> args) async {
   }
 
   await Rhttp.init();
+
+  // Initialize notification system early for background notifications
+  await NotificationHelper.initialize();
 
   final dynamicColors = await getDynamicColors();
 

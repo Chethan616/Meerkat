@@ -89,13 +89,15 @@ workflows:
 
   # macOS Build Workflow (Testing Mode - No Code Signing)
   macos-workflow:
-    name: macOS Build (Test Mode)
+    name: macOS Build (Test Mode + GitHub Release)
     max_build_duration: 60
     instance_type: mac_mini_m2
     environment:
       flutter: stable
       xcode: latest
       cocoapods: default
+      groups:
+        - github_credentials  # Optional: For GitHub Release uploads
     scripts:
       - name: Install Rust toolchain for macOS
         script: |
@@ -133,14 +135,46 @@ workflows:
         script: |
           cd app
           flutter build macos --release
-      - name: Package macOS app
+      - name: Package macOS app (ZIP + DMG)
         script: |
           cd app/build/macos/Build/Products/Release
           APP_NAME="Meerkat.app"
+          ZIP_NAME="Meerkat-macOS.zip"
           DMG_NAME="Meerkat-macOS.dmg"
+          
+          echo "📦 Creating ZIP archive..."
+          ditto -c -k --keepParent "$APP_NAME" "$ZIP_NAME"
+          
+          echo "💿 Creating DMG installer..."
           hdiutil create -volname Meerkat -srcfolder "$APP_NAME" -ov -format UDZO "$DMG_NAME"
+          
+          echo "✅ Packaging complete!"
+          echo "📂 Contents:"
+          ls -lh *.app *.zip *.dmg
+      - name: Upload to GitHub Releases (Optional)
+        script: |
+          # Only runs if GITHUB_TOKEN is set and this is a tag build
+          if [ -n "$GITHUB_TOKEN" ] && [ -n "$CM_TAG" ]; then
+            echo "🚀 Uploading to GitHub Releases..."
+            cd app/build/macos/Build/Products/Release
+            
+            # Install GitHub CLI if not present
+            brew install gh || true
+            
+            # Create or update release
+            gh release create "$CM_TAG" \
+              "Meerkat-macOS.zip" \
+              "Meerkat-macOS.dmg" \
+              --repo "$CM_REPO_SLUG" \
+              --title "Meerkat $CM_TAG" \
+              --notes "macOS Build (Unsigned) - Contains .app in ZIP and .dmg installer. Right-click Open for first launch." \
+              || echo "⚠️ Release upload skipped (no tag or token)"
+          else
+            echo "ℹ️ Skipping GitHub release (not a tag build or GITHUB_TOKEN not set)"
+          fi
     artifacts:
-      - app/build/macos/Build/Products/Release/*.app
+      - app/build/macos/Build/Products/Release/Meerkat.app
+      - app/build/macos/Build/Products/Release/*.zip
       - app/build/macos/Build/Products/Release/*.dmg
 
   # Windows Build Workflow

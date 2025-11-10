@@ -17,6 +17,10 @@ ThemeData getTheme(ColorMode colorMode, Brightness brightness, DynamicColors? dy
     return _getOniTheme(brightness);
   }
 
+  if (colorMode == ColorMode.dune) {
+    return _getDuneTheme(brightness);
+  }
+
   final colorScheme = _determineColorScheme(colorMode, brightness, dynamicColors);
 
   final lightInputBorder = OutlineInputBorder(
@@ -148,7 +152,7 @@ ColorScheme _determineColorScheme(ColorMode mode, Brightness brightness, Dynamic
 
   final colorScheme = switch (mode) {
     ColorMode.system => brightness == Brightness.light ? dynamicColors?.light : dynamicColors?.dark,
-    ColorMode.localsend => null,
+    ColorMode.dune => null,
     ColorMode.oled => (dynamicColors?.dark ?? defaultColorScheme).copyWith(
       surface: Colors.black,
     ),
@@ -188,20 +192,20 @@ ThemeData _getOniTheme(Brightness brightness) {
       outlineVariant: const Color(0xFFCAC4CF),
     );
   } else {
-    // Oni Dark Theme (Abyss) - deep black with vibrant accents
+    // Oni Dark Theme (Abyss) - deep black with vibrant red and pink accents
     oniColorScheme = ColorScheme.dark(
       primary: const Color(0xFFFF5252), // Bright red
       onPrimary: const Color(0xFF5F0000),
       primaryContainer: const Color(0xFFB71C1C),
       onPrimaryContainer: const Color(0xFFFFCDD2),
-      secondary: const Color(0xFFBB86FC), // Vibrant purple
-      onSecondary: const Color(0xFF381E72),
-      secondaryContainer: const Color(0xFF4F378B),
-      onSecondaryContainer: const Color(0xFFE9DDFF),
-      tertiary: const Color(0xFF03DAC6), // Cyan accent
-      onTertiary: const Color(0xFF003735),
-      tertiaryContainer: const Color(0xFF004D4A),
-      onTertiaryContainer: const Color(0xFF70F4E8),
+      secondary: const Color(0xFFFF4081), // Pink accent (Material Pink A200)
+      onSecondary: const Color(0xFF4A0027),
+      secondaryContainer: const Color(0xFF7B0038),
+      onSecondaryContainer: const Color(0xFFFFCDD2),
+      tertiary: const Color(0xFFFF6E40), // Orange-red accent
+      onTertiary: const Color(0xFF5F0000),
+      tertiaryContainer: const Color(0xFFD84315),
+      onTertiaryContainer: const Color(0xFFFFCCBC),
       error: const Color(0xFFFFB4AB),
       onError: const Color(0xFF690005),
       errorContainer: const Color(0xFF93000A),
@@ -243,6 +247,102 @@ ThemeData _getOniTheme(Brightness brightness) {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         foregroundColor: oniColorScheme.brightness == Brightness.dark ? Colors.white : null,
+        padding: checkPlatformIsDesktop() ? const EdgeInsets.all(16) : const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        padding: checkPlatformIsDesktop() ? const EdgeInsets.all(16) : const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+    ),
+  );
+}
+
+ThemeData _getDuneTheme(Brightness brightness) {
+  // Dune theme - desert-inspired colors with warm sandy tones
+  final ColorScheme duneColorScheme;
+
+  if (brightness == Brightness.light) {
+    // Dune Light Theme - warm sandy desert colors
+    duneColorScheme = ColorScheme.light(
+      primary: const Color(0xFFD4A574), // Sandy gold
+      onPrimary: const Color(0xFF3E2723),
+      primaryContainer: const Color(0xFFEDD5B3),
+      onPrimaryContainer: const Color(0xFF5D4037),
+      secondary: const Color(0xFFCD853F), // Peru/bronze
+      onSecondary: Colors.white,
+      secondaryContainer: const Color(0xFFFFE4B5), // Moccasin
+      onSecondaryContainer: const Color(0xFF6D4C41),
+      tertiary: const Color(0xFF8B7355), // Desert brown
+      onTertiary: Colors.white,
+      tertiaryContainer: const Color(0xFFD7CCC8),
+      onTertiaryContainer: const Color(0xFF4E342E),
+      error: const Color(0xFFBA1A1A),
+      onError: Colors.white,
+      errorContainer: const Color(0xFFFFDAD6),
+      onErrorContainer: const Color(0xFF410002),
+      surface: const Color(0xFFFFF8F0), // Warm off-white
+      onSurface: const Color(0xFF3E2723),
+      surfaceContainerHighest: const Color(0xFFEFEBE5),
+      outline: const Color(0xFF8D6E63),
+      outlineVariant: const Color(0xFFD7CCC8),
+    );
+  } else {
+    // Dune Dark Theme - deep desert night with warm accents
+    duneColorScheme = ColorScheme.dark(
+      primary: const Color(0xFFDEB887), // Burlywood
+      onPrimary: const Color(0xFF3E2723),
+      primaryContainer: const Color(0xFF8B7355),
+      onPrimaryContainer: const Color(0xFFFFE4B5),
+      secondary: const Color(0xFFD2691E), // Chocolate
+      onSecondary: const Color(0xFF1A1410),
+      secondaryContainer: const Color(0xFF8B4513), // Saddle brown
+      onSecondaryContainer: const Color(0xFFFFDDB3),
+      tertiary: const Color(0xFFBC8F8F), // Rosy brown
+      onTertiary: const Color(0xFF1A1410),
+      tertiaryContainer: const Color(0xFF6D4C41),
+      onTertiaryContainer: const Color(0xFFEFEBE5),
+      error: const Color(0xFFFFB4AB),
+      onError: const Color(0xFF690005),
+      errorContainer: const Color(0xFF93000A),
+      onErrorContainer: const Color(0xFFFFDAD6),
+      surface: const Color(0xFF1A1410), // Deep warm brown-black
+      onSurface: const Color(0xFFEFEBE5),
+      surfaceContainerHighest: const Color(0xFF2E2419),
+      outline: const Color(0xFF9E9189),
+      outlineVariant: const Color(0xFF4E4539),
+    );
+  }
+
+  final lightInputBorder = OutlineInputBorder(
+    borderSide: BorderSide(color: duneColorScheme.secondaryContainer),
+    borderRadius: _borderRadius,
+  );
+
+  final darkInputBorder = OutlineInputBorder(
+    borderSide: BorderSide(color: duneColorScheme.secondaryContainer),
+    borderRadius: _borderRadius,
+  );
+
+  return ThemeData(
+    colorScheme: duneColorScheme,
+    useMaterial3: true,
+    navigationBarTheme: duneColorScheme.brightness == Brightness.dark
+        ? NavigationBarThemeData(
+            iconTheme: WidgetStateProperty.all(const IconThemeData(color: Color(0xFFEFEBE5))),
+          )
+        : null,
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: duneColorScheme.secondaryContainer,
+      border: duneColorScheme.brightness == Brightness.light ? lightInputBorder : darkInputBorder,
+      focusedBorder: duneColorScheme.brightness == Brightness.light ? lightInputBorder : darkInputBorder,
+      enabledBorder: duneColorScheme.brightness == Brightness.light ? lightInputBorder : darkInputBorder,
+      contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: duneColorScheme.brightness == Brightness.dark ? const Color(0xFFEFEBE5) : null,
         padding: checkPlatformIsDesktop() ? const EdgeInsets.all(16) : const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
     ),

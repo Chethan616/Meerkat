@@ -72,7 +72,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   int get rustContentHash => 1108156133;
 
   static const kDefaultExternalLibraryLoaderConfig = ExternalLibraryLoaderConfig(
-    stem: 'rust_lib_localsend_app',
+    stem: 'rust_lib_meerkat',
     ioDirectory: 'rust/target/release/',
     webPrefix: 'pkg/',
   );

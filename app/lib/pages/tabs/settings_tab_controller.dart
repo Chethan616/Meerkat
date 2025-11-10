@@ -87,10 +87,10 @@ class SettingsTabController extends ReduxNotifier<SettingsTabVm> {
           await updateSystemOverlayStyleWithBrightness(Brightness.dark);
         }
 
-        // Show snackbar when Legacy theme is selected
-        if (colorMode == ColorMode.localsend) {
+        // Show snackbar when Dune theme is selected
+        if (colorMode == ColorMode.dune) {
           context.showSnackBar(
-            'Meerkat is derived from LocalSend. This Legacy theme uses the original LocalSend colors.',
+            'Dune theme: Desert-inspired colors with warm sandy tones.',
           );
         }
       },

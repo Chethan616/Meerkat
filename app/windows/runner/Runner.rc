@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "Tien Do Nam" "\0"
-            VALUE "FileDescription", "LocalSend" "\0"
+            VALUE "CompanyName", "Chethan Krishna" "\0"
+            VALUE "FileDescription", "Meerkat" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "localsend_app" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022-2024 Tien Do Nam. All rights reserved." "\0"
-            VALUE "OriginalFilename", "localsend_app.exe" "\0"
-            VALUE "ProductName", "LocalSend" "\0"
+            VALUE "InternalName", "meerkat" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 Chethan Krishna. Based on LocalSend by Tien Do Nam." "\0"
+            VALUE "OriginalFilename", "meerkat.exe" "\0"
+            VALUE "ProductName", "Meerkat" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

@@ -770,7 +770,7 @@ extension on ColorMode {
       ColorMode.system => t.settingsTab.general.colorOptions.system,
       ColorMode.oni => t.settingsTab.general.colorOptions.oni,
       ColorMode.oled => t.settingsTab.general.colorOptions.oled,
-      ColorMode.localsend => t.settingsTab.general.colorOptions.localsend,
+      ColorMode.dune => t.settingsTab.general.colorOptions.dune,
     };
   }
 }

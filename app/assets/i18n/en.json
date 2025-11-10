@@ -99,7 +99,7 @@
         "system": "System",
         "oni": "Oni",
         "oled": "True Dark",
-        "localsend": "Legacy"
+        "dune": "Dune"
       },
       "language": "Language",
       "languageOptions": {
@@ -288,7 +288,7 @@
     "restore": "Restore purchase"
   },
   "changelogPage": {
-    "title": "Changelog"
+    "title": "What's New"
   },
   "aliasGenerator(ignoreMissing, ignoreGpt)": {
     "@info": "Meerkat-themed device names - vigilant, social, desert-dwelling characteristics",

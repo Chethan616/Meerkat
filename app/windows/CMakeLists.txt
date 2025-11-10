@@ -1,10 +1,10 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
-project(localsend_app LANGUAGES CXX)
+project(meerkat LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "localsend_app")
+set(BINARY_NAME "meerkat")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
@@ -92,6 +92,12 @@ if(PLUGIN_BUNDLED_LIBRARIES)
     DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
     COMPONENT Runtime)
 endif()
+
+# Manually install Rust FFI plugin DLL (cargokit doesn't add to PLUGIN_BUNDLED_LIBRARIES)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/plugins/rust_lib_meerkat/Release/rust_lib_meerkat.dll"
+  DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+  CONFIGURATIONS Release
+  COMPONENT Runtime OPTIONAL)
 
 # Fully re-copy the assets directory on each build to avoid having stale files
 # from a previous install.

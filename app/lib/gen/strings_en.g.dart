@@ -588,8 +588,8 @@ class TranslationsChangelogPageEn {
 
   // Translations
 
-  /// en: 'Changelog'
-  String get title => 'Changelog';
+  /// en: 'What's New'
+  String get title => 'What\'s New';
 }
 
 // Path: aliasGenerator
@@ -1712,8 +1712,8 @@ class TranslationsSettingsTabGeneralColorOptionsEn {
   /// en: 'True Dark'
   String get oled => 'True Dark';
 
-  /// en: 'Legacy'
-  String get localsend => 'Legacy';
+  /// en: 'Dune'
+  String get dune => 'Dune';
 }
 
 // Path: settingsTab.general.languageOptions

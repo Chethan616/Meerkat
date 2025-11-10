@@ -2023,7 +2023,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust_lib_localsend_app"
+name = "rust_lib_meerkat"
 version = "0.1.0"
 dependencies = [
  "anyhow",

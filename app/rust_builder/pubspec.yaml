@@ -1,4 +1,4 @@
-name: rust_lib_localsend_app
+name: rust_lib_meerkat
 description: "Bindings for the core Rust library"
 version: 0.0.1
 publish_to: none

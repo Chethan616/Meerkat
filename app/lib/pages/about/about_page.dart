@@ -31,22 +31,24 @@ class AboutPage extends StatelessWidget {
           const SizedBox(height: 20),
           const LocalSendLogo(withText: true),
           Text(
-            '© ${DateTime.now().year} Tien Do Nam',
+            'Meerkat v1.0.0',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          Text(
+            '© ${DateTime.now().year} Chethan Krishna',
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 10),
-          Center(
-            child: TextButton(
-              onPressed: () async {
-                await launchUrl(Uri.parse('https://localsend.org'));
-              },
-              child: const Text('localsend.org'),
-            ),
+          const SizedBox(height: 5),
+          Text(
+            'Based on LocalSend © 2023-${DateTime.now().year} Tien Do Nam',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
           const SizedBox(height: 10),
           Text(t.aboutPage.description.join('\n\n')),
           const SizedBox(height: 20),
-          Text(t.aboutPage.author, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text('Original LocalSend Author', style: const TextStyle(fontWeight: FontWeight.bold)),
           Text.rich(
             _buildContributor(
               label: 'Tien Do Nam (@Tienisto)',
@@ -54,7 +56,7 @@ class AboutPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          Text(t.aboutPage.contributors, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text('Original LocalSend Contributors', style: const TextStyle(fontWeight: FontWeight.bold)),
           ..._contributors.map((contributor) {
             return Text.rich(
               _buildContributor(
@@ -133,24 +135,35 @@ class AboutPage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text('Meerkat Links', style: const TextStyle(fontWeight: FontWeight.bold)),
+              TextButton(
+                onPressed: () async {
+                  await launchUrl(Uri.parse('https://github.com/Chethan616/Meerkat'), mode: LaunchMode.externalApplication);
+                },
+                child: const Text('Meerkat Source Code (GitHub)'),
+              ),
+              const SizedBox(height: 10),
+              Text('Original LocalSend Links', style: const TextStyle(fontWeight: FontWeight.bold)),
               TextButton(
                 onPressed: () async {
                   await launchUrl(Uri.parse('https://localsend.org'));
                 },
-                child: const Text('Homepage'),
+                child: const Text('LocalSend Homepage'),
               ),
               TextButton(
                 onPressed: () async {
                   await launchUrl(Uri.parse('https://github.com/localsend/localsend'), mode: LaunchMode.externalApplication);
                 },
-                child: const Text('Source Code (Github)'),
+                child: const Text('LocalSend Source Code (GitHub)'),
               ),
               TextButton(
                 onPressed: () async {
                   await launchUrl(Uri.parse('https://codeberg.org/localsend/localsend'), mode: LaunchMode.externalApplication);
                 },
-                child: const Text('Source Code (Codeberg)'),
+                child: const Text('LocalSend Source Code (Codeberg)'),
               ),
+              const SizedBox(height: 10),
+              Text('License & Legal', style: const TextStyle(fontWeight: FontWeight.bold)),
               TextButton(
                 onPressed: () async {
                   await launchUrl(Uri.parse('https://www.apache.org/licenses/LICENSE-2.0'));

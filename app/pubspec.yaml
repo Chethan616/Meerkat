@@ -3,7 +3,7 @@ description: Meerkat - Fast and secure file sharing app for all your devices
 homepage: https://github.com/Chethan616/Meerkat
 publish_to: "none"
 
-version: 1.17.0+58
+version: 1.0.0+1
 
 environment:
   flutter: ^3.25.0
@@ -60,7 +60,7 @@ dependencies:
   refena_inspector_client: 2.1.0
   rhttp: 0.13.0
   routerino: 0.8.0
-  rust_lib_localsend_app:
+  rust_lib_meerkat:
     path: rust_builder
   saf_stream: 0.10.0
   screen_retriever: 0.2.0

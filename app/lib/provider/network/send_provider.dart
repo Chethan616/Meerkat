@@ -22,6 +22,7 @@ import 'package:localsend_app/model/state/send/sending_file.dart';
 import 'package:localsend_app/pages/home_page.dart';
 import 'package:localsend_app/pages/progress_page.dart';
 import 'package:localsend_app/pages/send_page.dart';
+import 'package:localsend_app/provider/biometric_auth_provider.dart';
 import 'package:localsend_app/provider/device_info_provider.dart';
 import 'package:localsend_app/provider/http_provider.dart';
 import 'package:localsend_app/provider/progress_provider.dart';
@@ -62,6 +63,20 @@ class SendNotifier extends Notifier<Map<String, SendSessionState>> {
     required List<CrossFile> files,
     required bool background,
   }) async {
+    // Check biometric authentication before sending files
+    final biometricNotifier = ref.notifier(biometricAuthProvider);
+    final isBiometricEnabled = await biometricNotifier.isBiometricEnabled();
+
+    if (isBiometricEnabled) {
+      final authenticated = await biometricNotifier.authenticate(
+        reason: 'Authenticate to send files',
+      );
+      if (!authenticated) {
+        // Authentication failed, don't proceed with sending
+        return;
+      }
+    }
+
     final client = ref.read(httpProvider).longLiving;
     final cancelToken = CancelToken();
     final sessionId = _uuid.v4();

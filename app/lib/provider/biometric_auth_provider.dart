@@ -74,13 +74,38 @@ class BiometricAuthNotifier extends Notifier<BiometricAuthState> {
       return (success: false, error: 'Authentication was cancelled or failed. Please try again');
     } on PlatformException catch (e) {
       // Handle specific error codes
+      // Special case: NoHardware on Windows means PIN/password is available
+      if (e.code == 'NoHardware' || e.code == 'NotAvailable') {
+        // Try to authenticate anyway - Windows PIN will work
+        try {
+          final bool didAuthenticate = await _localAuth.authenticate(
+            localizedReason: 'Please authenticate with your PIN/password to enable security for Meerkat',
+            options: const AuthenticationOptions(
+              stickyAuth: true,
+              biometricOnly: false,
+              useErrorDialogs: true,
+              sensitiveTransaction: false,
+            ),
+          );
+
+          if (didAuthenticate) {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setBool(_biometricEnabledKey, true);
+            state = BiometricAuthState.available;
+            return (success: true, error: null);
+          }
+          return (success: false, error: 'Authentication was cancelled or failed. Please try again');
+        } catch (_) {
+          // If it still fails, show the appropriate error message
+          return (
+            success: false,
+            error: 'No authentication method available. Please set up Windows Hello PIN in Settings → Accounts → Sign-in options',
+          );
+        }
+      }
+
       String errorMessage;
       switch (e.code) {
-        case 'NotAvailable':
-        case 'NoHardware':
-          // If no biometric hardware, we should still allow PIN/password
-          errorMessage = 'Authentication is available but no biometric hardware found. Using device PIN/password instead';
-          break;
         case 'NotEnrolled':
           errorMessage = 'No authentication method set up. Please set up fingerprint, face unlock, or PIN in device settings';
           break;

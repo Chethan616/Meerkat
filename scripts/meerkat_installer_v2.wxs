@@ -27,10 +27,8 @@
     
     <ui:WixUI Id="WixUI_InstallDir" />
     
-    <!-- Custom installer text -->
+    <!-- Use standard images - no custom overlays -->
     <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\License.rtf" />
-    <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\meerkat_banner.bmp" />
-    <WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\meerkat_dialog.bmp" />
 
     <!-- Custom action to copy data folder -->
     <CustomAction Id="CopyDataFolder"

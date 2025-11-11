@@ -10,6 +10,8 @@ $bannerWidth = 493
 $bannerHeight = 58
 $banner = New-Object System.Drawing.Bitmap($bannerWidth, $bannerHeight)
 $graphics = [System.Drawing.Graphics]::FromImage($banner)
+$graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+$graphics.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAlias
 
 # Professional gradient background (Blue theme)
 $rect = New-Object System.Drawing.Rectangle(0, 0, $bannerWidth, $bannerHeight)
@@ -21,13 +23,10 @@ $brush = New-Object System.Drawing.Drawing2D.LinearGradientBrush(
 )
 $graphics.FillRectangle($brush, $rect)
 
-# Add text
-$font = New-Object System.Drawing.Font("Segoe UI", 24, [System.Drawing.FontStyle]::Bold)
+# Add text with proper spacing
+$font = New-Object System.Drawing.Font("Segoe UI", 22, [System.Drawing.FontStyle]::Bold)
 $textBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
-$graphics.DrawString("Meerkat", $font, $textBrush, 20, 12)
-
-$subtitleFont = New-Object System.Drawing.Font("Segoe UI", 10)
-$graphics.DrawString("Secure File Sharing", $subtitleFont, $textBrush, 180, 28)
+$graphics.DrawString("Meerkat Setup", $font, $textBrush, 20, 15)
 
 # Save banner
 $banner.Save("$scriptDir\meerkat_banner.bmp", [System.Drawing.Imaging.ImageFormat]::Bmp)
@@ -41,29 +40,35 @@ $dialogWidth = 493
 $dialogHeight = 312
 $dialog = New-Object System.Drawing.Bitmap($dialogWidth, $dialogHeight)
 $graphics = [System.Drawing.Graphics]::FromImage($dialog)
+$graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+$graphics.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAlias
 
-# Professional gradient background
+# Clean gradient background (Blue theme)
 $rect = New-Object System.Drawing.Rectangle(0, 0, $dialogWidth, $dialogHeight)
 $brush = New-Object System.Drawing.Drawing2D.LinearGradientBrush(
     $rect,
     [System.Drawing.Color]::FromArgb(41, 128, 185),   # Deep blue
-    [System.Drawing.Color]::FromArgb(142, 68, 173),   # Purple accent
+    [System.Drawing.Color]::FromArgb(52, 152, 219),   # Lighter blue (not purple)
     [System.Drawing.Drawing2D.LinearGradientMode]::Vertical
 )
 $graphics.FillRectangle($brush, $rect)
 
-# Add branding
-$titleFont = New-Object System.Drawing.Font("Segoe UI", 36, [System.Drawing.FontStyle]::Bold)
-$graphics.DrawString("Meerkat", $titleFont, $textBrush, 30, 100)
+# Add subtle overlay for better text contrast
+$overlayBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(30, 0, 0, 0))
+$graphics.FillRectangle($overlayBrush, $rect)
 
-$descFont = New-Object System.Drawing.Font("Segoe UI", 14)
-$graphics.DrawString("Secure File Sharing", $descFont, $textBrush, 30, 160)
-$graphics.DrawString("Share files safely across devices", $descFont, $textBrush, 30, 190)
-$graphics.DrawString("on your local network", $descFont, $textBrush, 30, 220)
+# Professional branding with proper spacing
+$titleFont = New-Object System.Drawing.Font("Segoe UI", 42, [System.Drawing.FontStyle]::Bold)
+$graphics.DrawString("Meerkat", $titleFont, $textBrush, 40, 80)
 
-# Add version
-$versionFont = New-Object System.Drawing.Font("Segoe UI", 10)
-$graphics.DrawString("Version 1.0.0", $versionFont, $textBrush, 30, 270)
+$descFont = New-Object System.Drawing.Font("Segoe UI", 16)
+$graphics.DrawString("Secure Local File Sharing", $descFont, $textBrush, 40, 155)
+
+# Feature highlights with proper spacing
+$featureFont = New-Object System.Drawing.Font("Segoe UI", 12)
+$graphics.DrawString("• Cross-platform file transfers", $featureFont, $textBrush, 40, 200)
+$graphics.DrawString("• No internet required", $featureFont, $textBrush, 40, 225)
+$graphics.DrawString("• Fast and private", $featureFont, $textBrush, 40, 250)
 
 # Save dialog
 $dialog.Save("$scriptDir\meerkat_dialog.bmp", [System.Drawing.Imaging.ImageFormat]::Bmp)

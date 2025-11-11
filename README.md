@@ -1,86 +1,79 @@
-# 🦊 Meerkat – Fast, Private Local File Sharing
+# 🦊 Meet Meerkat: Fast, Private File Sharing
 
-Meerkat is an open-source Flutter app for **fast, secure, and offline file sharing** across devices — redesigned with a clean UI and modern experience.
+Ever tried sending a big video project to your friend sitting right next to you, only to get stuck with slow Wi-Fi or “Internet required” errors?  
+**Meerkat** fixes that. 🚀  
 
-🧩 **Based on [LocalSend](https://github.com/localsend/localsend)**  
-Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+It’s a simple app that lets you share files **without an internet connection** — fast, private, and completely offline.
 
----
-
-## ✨ Features
-- 📡 Local file sharing without the Internet  
-- 🔒 Fully offline & secure  
-- 💡 Clean, fast, and open-source  
-- 🎨 Redesigned user interface  
+> 🧡 Inspired by the awesome [LocalSend](https://github.com/localsend/localsend) project — we just gave it a fresh look with modern features.  
+> Big thanks to the LocalSend team! 👋
 
 ---
 
-## 🧠 Attribution
-Original project © [LocalSend Contributors](https://github.com/localsend/localsend)  
-Modifications & UI enhancements © 2025 Chethan Krishna
+## ✨ What Makes Meerkat Cool
+
+- **📡 Go Offline:** Share files over your local Wi-Fi network. No internet needed!  
+- **🔒 Keep it Secret:** Files go straight from your device to theirs — no servers, no data collection.  
+- **💡 Simple & Clean:** Redesigned with a clean, minimal interface anyone can use.  
+- **🎨 Open Source:** Learn from the code, tweak it, or even build your own features.
 
 ---
 
-## ⚖️ License
-This project is licensed under the [Apache License 2.0](LICENSE).
+## 🚀 Want to Build It Yourself? (For Students & Devs)
+
+Learning Flutter or curious how it all works? Awesome — you can build Meerkat yourself!
+
+1. **Install Tools:**  
+   Get [Flutter](https://flutter.dev) and [Rust](https://www.rust-lang.org) on your system.
+
+2. **Get the Code:**  
+   Clone this repo or download it as a ZIP.
+
+3. **Open the Project:**  
+   In your terminal, go to the `app` folder:
+   ```bash
+   cd app
+   ```
+
+4. **Install Packages:**  
+   Run:
+   ```bash
+   flutter pub get
+   ```
+
+5. **Run It!**  
+   Start the app:
+   ```bash
+   flutter run
+   ```
 
 ---
 
-## 🚀 Getting Started
+## 🧠 How Does It Work?
 
-To compile Meerkat from the source code, follow these steps:
-
-1. Install Flutter [directly](https://flutter.dev) or using [fvm](https://fvm.app) (see [version required](app/.fvmrc))
-2. Install [Rust](https://www.rust-lang.org/tools/install)
-3. Clone the `Meerkat` repository
-4. Run `cd app` to enter the app directory
-5. Run `flutter pub get` to download dependencies
-6. Run `flutter run` to start the app
-
-> [!NOTE]
-> Meerkat currently requires an older Flutter version (specified in [app/.fvmrc](app/.fvmrc))
-> and thus build issues may be caused by a mismatch between the required and the (system-wide) installed Flutter version.  
-> To make development more consistent, Meerkat uses [fvm](https://fvm.app) to manage the project Flutter version.
-> After installing `fvm`, run `fvm flutter` instead of `flutter`.
+Meerkat (and LocalSend) skips the “upload → server → download” part.  
+Instead, it creates a **direct, secure HTTPS connection** between devices on the same Wi-Fi network — meaning faster transfers and complete privacy.
 
 ---
 
-## 🛠️ Building
+## 🤝 Want to Contribute?
 
-### Android
+This is an open-source project built by students and developers like you!  
+If you spot a bug, have an idea, or want to help improve it, feel free to:
 
-Traditional APK
+- Open an issue 🐞  
+- Submit a pull request ⚙️  
 
-```bash
-flutter build apk
-```
-
-AppBundle for Google Play
-
-```bash
-flutter build appbundle
-```
+Every contribution helps!
 
 ---
 
-## 📱 About the Original Project
+## 📧 Contact & Credits
 
-This project is based on **LocalSend**, a cross-platform app that enables secure communication between devices using a REST API and HTTPS encryption. Unlike other messaging apps that rely on external servers, it doesn't require an internet connection or third-party servers, making it a fast and reliable solution for local communication.
-
-For more information on the LocalSend Protocol, see the [documentation](https://github.com/localsend/protocol).
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! If you'd like to improve Meerkat, feel free to:
-- Report bugs
-- Suggest new features
-- Submit pull requests
+- **Project by:** [Chethan Krishna](https://github.com/Chethan616/Meerkat)  
+- **Based on:** [LocalSend](https://github.com/localsend/localsend) (huge thanks to the contributors!)  
+- **License:** [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ---
 
-## 📧 Contact
-
-**Developer:** Chethan Krishna  
-**GitHub:** [Chethan616/Meerkat](https://github.com/Chethan616/Meerkat)
+> _Made by students, for students — because sharing should be simple._ ✨

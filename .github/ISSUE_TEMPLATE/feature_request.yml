@@ -6,7 +6,7 @@ body:
   - type: checkboxes
     id: confirm
     attributes:
-      label: Read [this](https://github.com/localsend/localsend/issues/528) before anything
+      label: Read [this](https://github.com/Chethan616/Meerkat/issues) before submitting
       options:
         - label: I have read it.
         - label: Issues not fitting are closed.

@@ -40,21 +40,17 @@ class NotificationHelper {
 
       // Request permissions for iOS/macOS
       if (checkPlatform([TargetPlatform.iOS, TargetPlatform.macOS])) {
-        await _notifications
-            .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-            ?.requestPermissions(
-              alert: true,
-              badge: true,
-              sound: true,
-            );
+        await _notifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
 
-        await _notifications
-            .resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()
-            ?.requestPermissions(
-              alert: true,
-              badge: true,
-              sound: true,
-            );
+        await _notifications.resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
       }
 
       // Request permissions for Android 13+
@@ -137,7 +133,7 @@ class NotificationHelper {
         body,
         notificationDetails,
       );
-      
+
       print('Incoming file notification shown: $title - $body');
     } catch (e) {
       print('Error showing incoming file notification: $e');
@@ -193,7 +189,7 @@ class NotificationHelper {
         'Received ${fileCount > 1 ? '$fileCount files' : '1 file'} from $senderName',
         notificationDetails,
       );
-      
+
       print('Transfer complete notification shown');
     } catch (e) {
       print('Error showing transfer complete notification: $e');

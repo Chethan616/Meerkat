@@ -58,10 +58,10 @@ jobs:
 
       - name: Zip compiled files
         working-directory: app
-        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath LocalSend.zip
+        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath Meerkat.zip
 
       - name: Upload zip
         uses: actions/upload-artifact@v4
         with:
           name: windows-zip-x86-64-result
-          path: app/LocalSend.zip
+          path: app/Meerkat.zip

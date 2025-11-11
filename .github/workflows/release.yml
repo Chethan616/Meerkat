@@ -209,7 +209,7 @@ jobs:
         id: find_deb
         run: |
           VERSION=${{ needs.build.outputs.version }}
-          DEB_PATH=$(find app/dist -name "localsend_app-$VERSION*-linux.deb")
+          DEB_PATH=$(find app/dist -name "meerkat_app-$VERSION*-linux.deb")
           echo "deb_path=$DEB_PATH" >> $GITHUB_OUTPUT
 
       - name: Check if deb file exists
@@ -251,7 +251,7 @@ jobs:
         id: find_deb
         run: |
           VERSION=${{ needs.build.outputs.version }}
-          DEB_PATH=$(find app/dist -name "localsend_app-$VERSION*-linux.deb")
+          DEB_PATH=$(find app/dist -name "meerkat_app-$VERSION*-linux.deb")
           echo "deb_path=$DEB_PATH" >> $GITHUB_OUTPUT
 
       - name: Check if deb file exists
@@ -311,11 +311,11 @@ jobs:
       - name: Copy logo to AppDir
         run: |
           mkdir -p AppDir/usr/share/icons/hicolor/32x32/apps
-          cp app/assets/img/logo-32.png AppDir/usr/share/icons/hicolor/32x32/apps/localsend.png
+          cp app/assets/img/logo-32.png AppDir/usr/share/icons/hicolor/32x32/apps/meerkat.png
           mkdir -p AppDir/usr/share/icons/hicolor/128x128/apps
-          cp app/assets/img/logo-128.png AppDir/usr/share/icons/hicolor/128x128/apps/localsend.png
+          cp app/assets/img/logo-128.png AppDir/usr/share/icons/hicolor/128x128/apps/meerkat.png
           mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
-          cp app/assets/img/logo-256.png AppDir/usr/share/icons/hicolor/256x256/apps/localsend.png
+          cp app/assets/img/logo-256.png AppDir/usr/share/icons/hicolor/256x256/apps/meerkat.png
 
       - name: Copy Recipe to correct location
         run: cp scripts/appimage/AppImageBuilder_x86_64.yml AppImageBuilder.yml
@@ -368,13 +368,13 @@ jobs:
 
       - name: Zip compiled files
         working-directory: app
-        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath LocalSend.zip
+        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath Meerkat.zip
 
       - name: Upload zip
         uses: actions/upload-artifact@v4
         with:
           name: windows-zip-x86-64-result
-          path: app/LocalSend.zip
+          path: app/Meerkat.zip
 
   release:
     needs:
@@ -417,7 +417,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: app-armeabi-v7a-release.apk
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-android-arm32v7.apk
+          asset_name: Meerkat-${{ needs.build.outputs.version }}-android-arm32v7.apk
           asset_content_type: application/vnd.android.package-archive
 
       - name: Upload Release Asset (arm64v8)
@@ -427,7 +427,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: app-arm64-v8a-release.apk
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-android-arm64v8.apk
+          asset_name: Meerkat-${{ needs.build.outputs.version }}-android-arm64v8.apk
           asset_content_type: application/vnd.android.package-archive
 
       - name: Upload Release Asset (x64)
@@ -437,7 +437,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: app-x86_64-release.apk
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-android-x64.apk
+          asset_name: Meerkat-${{ needs.build.outputs.version }}-android-x64.apk
           asset_content_type: application/vnd.android.package-archive
 
       # TAR.GZ (x86_64)
@@ -460,7 +460,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.tar.gz
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
+          asset_name: Meerkat-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
           asset_content_type: application/gzip
 
       # TAR.GZ (arm_64)
@@ -483,7 +483,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.tar.gz
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-linux-arm-64.tar.gz
+          asset_name: Meerkat-${{ needs.build.outputs.version }}-linux-arm-64.tar.gz
           asset_content_type: application/gzip
 
       # DEB (x86_64)
@@ -503,7 +503,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.deb
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-linux-x86-64.deb
+          asset_name: Meerkat-${{ needs.build.outputs.version }}-linux-x86-64.deb
           asset_content_type: application/vnd.debian.binary-package
 
       # DEB (arm_64)
@@ -523,7 +523,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.deb
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-linux-arm-64.deb
+          asset_name: Meerkat-${{ needs.build.outputs.version }}-linux-arm-64.deb
           asset_content_type: application/vnd.debian.binary-package
 
       # APPIMAGE (x86_64)
@@ -551,7 +551,7 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.AppImage
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-linux-x86-64.AppImage
+          asset_name: Meerkat-${{ needs.build.outputs.version }}-linux-x86-64.AppImage
           asset_content_type: application/x-appimage
 
       # WINDOWS ZIP (x86_64)
@@ -571,5 +571,5 @@ jobs:
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           asset_path: result.zip
-          asset_name: LocalSend-${{ needs.build.outputs.version }}-windows-x86-64.zip
+          asset_name: Meerkat-${{ needs.build.outputs.version }}-windows-x86-64.zip
           asset_content_type: application/zip

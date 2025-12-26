@@ -1,5 +1,5 @@
 # 🦊 Meet Meerkat: Fast, Private File Sharing
-
+  
 Ever tried sending a big video project to your friend sitting right next to you, only to get stuck with slow Wi-Fi or “Internet required” errors?  
 **Meerkat** fixes that. 🚀  
 

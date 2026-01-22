@@ -1,0 +1,129 @@
+Bro, great — now we know **exactly** what is failing.
+
+The installer is trying to run this command:
+
+```
+xcopy "C:\Users\ChethanKrishna\Downloads\Meerkat\Meerkat\scripts\..\app\build\windows\x64\runner\Release\data"  
+"C:\Program Files\Meerkat\data\" /E /I /Y
+```
+
+This means:
+
+* It wants to **copy a "data" folder** from your download directory into Program Files.
+* That "data" folder is **missing, not built, or inaccessible**.
+* That's why you see **Error 1722 – CopyDataFolder action failed.**
+
+So the installer cannot find the folder it’s trying to copy.
+
+---
+
+# ✅ **Why this error happens**
+
+One of these must be true:
+
+### **1️⃣ The `data` folder does NOT exist**
+
+Check manually:
+
+Go to:
+
+```
+C:\Users\ChethanKrishna\Downloads\Meerkat\Meerkat\app\build\windows\x64\runner\Release\
+```
+
+Is there a **data** folder?
+
+* ✔ If YES → permissions issue
+* ✖ If NO → build incomplete → installer cannot proceed
+
+---
+
+### **2️⃣ You downloaded the source code, NOT the built release**
+
+The path (`app\build\windows...`) indicates you have the **source repo** and not the compiled release.
+
+So the "data" folder is never generated unless you **build the project**.
+
+---
+
+### **3️⃣ Installer needs admin access to write to Program Files**
+
+Even if the folder exists, without permissions, XCOPY fails.
+
+---
+
+# ✅ **Fix (Most likely solution)**
+
+## **Fix 1 — Download the official compiled Meerkat release**
+
+If you downloaded from GitHub source:
+
+❌ It will NOT contain the required build folders
+✔ Only the **Release ZIP** contains the data folder
+
+Download from:
+
+✔ **"Releases" > "Meerkat Installer"**
+(not the source code zip)
+
+This immediately fixes the missing `data` folder.
+
+---
+
+## **Fix 2 — If you want to install your own build**
+
+If you're building Meerkat from source (Flutter):
+
+Run in the project folder:
+
+```
+flutter build windows --release
+```
+
+This generates the missing folder:
+
+```
+app\build\windows\x64\runner\Release\data
+```
+
+Then run the installer again.
+
+---
+
+## **Fix 3 — Run installer as Admin**
+
+Right-click → **Run as administrator**
+
+---
+
+## **Fix 4 — Manually create missing folder**
+
+If everything fails:
+
+1. Create folder:
+
+```
+C:\Program Files\Meerkat\data
+```
+
+2. Copy any contents you have into it
+3. Rerun installer
+
+---
+
+# ⭐ Quick check (tell me this)
+
+Bro, just tell me:
+
+### **Does this path exist on your laptop?**
+
+```
+C:\Users\ChethanKrishna\Downloads\Meerkat\Meerkat\app\build\windows\x64\runner\Release\data
+```
+
+* YES / NO ?
+
+If you say YES → I’ll tell you permission fix
+If you say NO → I’ll guide you to download or build correctly
+
+Reply and I’ll fix it in one message 💯

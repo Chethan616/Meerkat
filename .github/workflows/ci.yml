@@ -15,6 +15,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -23,9 +24,11 @@ jobs:
       - name: Dependencies (app)
         working-directory: app
         run: flutter pub get
+
       - name: Remove gen directory (app)
         working-directory: app
         run: rm -rf lib/gen
+
       - name: Check format (app)
         working-directory: app
         run: dart format --set-exit-if-changed lib test
@@ -33,6 +36,7 @@ jobs:
       - name: Dependencies (common)
         working-directory: common
         run: dart pub get
+
       - name: Check format (common)
         working-directory: common
         run: dart format --set-exit-if-changed lib test
@@ -42,6 +46,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.84.1"
+
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -50,9 +60,11 @@ jobs:
       - name: Dependencies (app)
         working-directory: app
         run: flutter pub get
+
       - name: Analyze (app)
         working-directory: app
         run: flutter analyze
+
       - name: Test (app)
         working-directory: app
         run: flutter test
@@ -60,9 +72,11 @@ jobs:
       - name: Dependencies (common)
         working-directory: common
         run: dart pub get
+
       - name: Analyze (common)
         working-directory: common
         run: dart analyze
+
       - name: Test (common)
         working-directory: common
         run: dart test
@@ -72,25 +86,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Extract version from pubspec.yaml
-        id: pubspec_version
-        run: |
-          VERSION=$(grep '^version: ' app/pubspec.yaml | sed 's/version: //' | sed 's/\+.*//')
-          echo "Pubspec version is $VERSION"
-          echo "pubspec_version=$VERSION" >> $GITHUB_ENV
-
-      - name: Extract version from Inno Setup configuration
-        id: inno_version
-        run: |
-          VERSION=$(grep '#define MyAppVersion ' scripts/compile_windows_exe-inno.iss | sed 's/#define MyAppVersion "//' | sed 's/"//')
-          echo "Inno Setup version is $VERSION"
-          echo "inno_version=$VERSION" >> $GITHUB_ENV
 
       - name: Compare pubspec and Inno Setup versions
         run: |
-          if [ "$pubspec_version" != "$inno_version" ]; then
-            echo "Version mismatch detected!"
+          PUBSPEC_VERSION=$(grep '^version: ' app/pubspec.yaml | sed 's/version: //' | sed 's/+.*//')
+          INNO_VERSION=$(grep '#define MyAppVersion ' scripts/compile_windows_exe-inno.iss | sed 's/#define MyAppVersion "//' | sed 's/"//')
+          echo "Pubspec version: $PUBSPEC_VERSION"
+          echo "Inno Setup version: $INNO_VERSION"
+          if [ "$PUBSPEC_VERSION" != "$INNO_VERSION" ]; then
+            echo "::error::Version mismatch! pubspec.yaml=$PUBSPEC_VERSION vs inno.iss=$INNO_VERSION"
             exit 1
           else
-            echo "Versions match."
+            echo "Versions match: $PUBSPEC_VERSION"
           fi

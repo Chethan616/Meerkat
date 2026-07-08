@@ -5,7 +5,7 @@ on:
 
 env:
   FLUTTER_VERSION: "3.35.6"
-  APK_BUILD_DIR: "/tmp/build"
+  RUST_VERSION: "1.84.1"
 
 jobs:
   build:
@@ -23,6 +23,11 @@ jobs:
           VERSION=$(sed -n 's/^version: \([0-9]*\.[0-9]*\.[0-9]*\).*/\1/p' pubspec.yaml)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -34,7 +39,7 @@ jobs:
 
       - name: Build generated files
         working-directory: app
-        run: flutter pub run build_runner build -d
+        run: dart run build_runner build -d
 
       - name: Upload updated lib files with generated code
         uses: actions/upload-artifact@v4
@@ -55,10 +60,15 @@ jobs:
           name: lib-files
           path: app/lib
 
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y clang cmake libgtk-3-dev ninja-build libayatana-appindicator3-dev libfuse2
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
 
       - uses: subosito/flutter-action@v2
         with:
@@ -69,33 +79,30 @@ jobs:
         working-directory: app
         run: flutter pub get
 
-      - name: Compile linux
+      - name: Build Linux
         working-directory: app
         run: flutter build linux
 
-      - name: Copy compiled linux files
-        working-directory: app
-        run: |
-          mkdir AppDir
-          cp -r build/linux/x64/release/bundle/* AppDir/
-
-      - name: Copy logo to AppDir
-        working-directory: app
+      - name: Prepare AppDir
         run: |
           mkdir -p AppDir/usr/share/icons/hicolor/32x32/apps
-          cp assets/img/logo-32.png AppDir/usr/share/icons/hicolor/32x32/apps/meerkat.png
           mkdir -p AppDir/usr/share/icons/hicolor/128x128/apps
-          cp assets/img/logo-128.png AppDir/usr/share/icons/hicolor/128x128/apps/meerkat.png
           mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
-          cp assets/img/logo-256.png AppDir/usr/share/icons/hicolor/256x256/apps/meerkat.png
+          cp -r app/build/linux/x64/release/bundle/* AppDir/
+          cp app/assets/img/logo-32.png  AppDir/usr/share/icons/hicolor/32x32/apps/meerkat.png
+          cp app/assets/img/logo-128.png AppDir/usr/share/icons/hicolor/128x128/apps/meerkat.png
+          cp app/assets/img/logo-256.png AppDir/usr/share/icons/hicolor/256x256/apps/meerkat.png
+
+      - name: Copy AppImageBuilder recipe
+        run: cp scripts/appimage/AppImageBuilder_x86_64.yml AppImageBuilder.yml
 
       - name: Build AppImage
         uses: AppImageCrafters/build-appimage@57c3bc6963f870ce3be103117de5b5e33ffbaeb6
         with:
-          recipe: ./app/AppImageBuilder.yml
+          recipe: ./AppImageBuilder.yml
 
       - name: Upload AppImage file
         uses: actions/upload-artifact@v4
         with:
           name: appimage-result
-          path: ./app/*.AppImage
+          path: ./*.AppImage

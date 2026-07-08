@@ -8,8 +8,8 @@ AppDir:
   path: AppDir
   app_info:
     id: com.chethan616.meerkat
-    name: LocalSend
-    icon: localsend
+    name: Meerkat
+    icon: meerkat
     version: latest
     exec: localsend_app
     exec_args: $@

@@ -1,25 +1,31 @@
 # Meerkat Changelog
 
-## 1.0.0 (2025-11-09)
+## 1.0.0 (2026-07-08)
 
-**Initial Release - Meerkat is born!**
+**Initial Public Release - Meerkat is born!** 🦊
 
-Meerkat is a rebranded and enhanced version of LocalSend, bringing you fast and secure file sharing with a fresh new look.
+Meerkat is a rebranded and enhanced version of LocalSend, bringing fast and secure file sharing with a fresh new look, biometric security, and a Rust-powered core.
 
 ### What's New in Meerkat
 
-- 🎨 **Brand New Oni Theme**: Introducing vibrant Oni Light and Abyss Dark themes with bold red and purple accents
-- 🦌 **Meerkat-Themed Device Names**: Say goodbye to "Good Apple" - meet "Alert Sentinel", "Quick Scout", and other meerkat-inspired names
-- 🎭 **Legacy Theme Option**: Keep the original LocalSend colors with our "Legacy" theme option
+- 🎨 **Brand New Oni Theme**: Vibrant Oni Light and Abyss Dark themes with bold red and purple accents
+- 🦌 **Meerkat-Themed Device Names**: Meet "Alert Sentinel", "Quick Scout", and other meerkat-inspired names
+- 🎭 **Legacy Theme Option**: Keep the original LocalSend colors with the "Legacy" theme option
 - 📱 **Complete UI Rebrand**: All references updated from LocalSend to Meerkat
 - 🌈 **True Dark Mode**: Renamed OLED theme to "True Dark" for better clarity
-- 🏗️ **Built for Freedom**: Apache 2.0 licensed, open source, and ready for the Play Store
+- 🔒 **Biometric Authentication**: Lock sending AND receiving behind fingerprint/face unlock (local_auth)
+- 🔔 **Local Notifications**: System notifications for incoming file transfer requests
+- 🔐 **PIN Protection for Sending**: Require a PIN before initiating a transfer
+- 🦀 **Rust Core Library**: High-performance HTTP + WebRTC + Crypto modules in Rust (flutter_rust_bridge)
+- 🪟 **Windows MSI Installer**: Professional WiX-based installer for Windows
+- 🌍 **Cross-Platform**: Android, iOS, macOS, Windows, Linux — all from one codebase
+- 🏗️ **Built for Freedom**: Apache 2.0 licensed, open source
 
 ### Credits & Acknowledgments
 
 Meerkat is proudly derived from **LocalSend** by Tien Do Nam.
 - Original LocalSend: © 2023-2025 Tien Do Nam
-- Meerkat modifications: © 2025 Chethan Krishna
+- Meerkat modifications: © 2025-2026 Chethan Krishna
 
 Thank you to the LocalSend community for building an amazing foundation for secure, fast file sharing!
 

@@ -339,6 +339,66 @@ jobs:
           path: app/Meerkat-*-windows-x86-64.zip
 
   # ─────────────────────────────────────────────
+  # macOS x86_64 and arm64 (universal / native)
+  # ─────────────────────────────────────────────
+  build_macos:
+    needs: get_version
+    runs-on: macos-14
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+          targets: "aarch64-apple-darwin,x86_64-apple-darwin"
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: "stable"
+
+      - name: Check rust toolchain
+        working-directory: app
+        run: rustup show
+
+      - name: Dependencies
+        working-directory: app
+        run: flutter pub get
+
+      - name: Build macOS app
+        working-directory: app
+        run: flutter build macos --release
+
+      - name: Package macOS app (ZIP & DMG)
+        run: |
+          VERSION=${{ needs.get_version.outputs.version }}
+          cd app/build/macos/Build/Products/Release
+          
+          # Find the built .app name (which could be Meerkat.app or LocalSend.app)
+          APP_NAME=$(find . -maxdepth 1 -name "*.app" | head -1)
+          if [ -z "$APP_NAME" ]; then
+            echo "::error::No .app bundle found"
+            exit 1
+          fi
+          
+          echo "📦 Packing app bundle into ZIP..."
+          ditto -c -k --keepParent "$APP_NAME" "/tmp/Meerkat-${VERSION}-macOS.zip"
+          
+          echo "💿 Packaging DMG installer..."
+          hdiutil create -volname Meerkat -srcfolder "$APP_NAME" -ov -format UDZO "/tmp/Meerkat-${VERSION}-macOS.dmg"
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-result
+          path: |
+            /tmp/Meerkat-*-macOS.zip
+            /tmp/Meerkat-*-macOS.dmg
+
+  # ─────────────────────────────────────────────
   # Upload all artifacts to the GitHub Release
   # ─────────────────────────────────────────────
   upload_release_assets:
@@ -349,6 +409,7 @@ jobs:
       - build_deb_x86_64
       - build_appimage_x86_64
       - build_windows_zip
+      - build_macos
     runs-on: ubuntu-24.04
     permissions:
       contents: write
